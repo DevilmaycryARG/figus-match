@@ -4,155 +4,216 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FigusMatch</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --verde: #16a34a; --verde-dark: #14532d; --verde-light: #dcfce7; --verde-mid: #22c55e;
-    --amarillo: #eab308; --amarillo-light: #fef9c3;
-    --rojo: #dc2626; --rojo-light: #fee2e2;
-    --azul: #2563eb; --azul-light: #dbeafe;
-    --naranja: #ea580c; --naranja-light: #ffedd5;
-    --gris: #6b7280; --gris-light: #f3f4f6; --gris-border: #e5e7eb;
-    --bg: #f0fdf4; --white: #fff;
-    --text: #111827; --text-sec: #6b7280;
-    --radius: 14px; --radius-sm: 10px;
-    --shadow: 0 2px 8px rgba(0,0,0,0.08);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .screen { display: none; }
-  .screen.active { display: flex; }
+:root {
+  --verde: #16a34a; --verde-dark: #14532d; --verde-light: #dcfce7; --verde-mid: #22c55e;
+  --amarillo: #eab308; --amarillo-light: #fef9c3;
+  --rojo: #dc2626; --rojo-light: #fee2e2;
+  --azul: #2563eb; --azul-light: #dbeafe;
+  --naranja: #ea580c; --naranja-light: #ffedd5;
+  --gris: #6b7280; --gris-light: #f3f4f6; --gris-border: #e5e7eb;
+  --bg: #f0fdf4; --white: #fff;
+  --text: #111827; --text-sec: #6b7280;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 2px 10px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; }
+.screen { display: none; }
+.screen.active { display: flex; }
 
-  /* AUTH */
-  #screen-login, #screen-register { flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; background: linear-gradient(160deg,#bbf7d0,#f0fdf4 50%,#dcfce7); }
-  .auth-box { background: var(--white); border-radius: 24px; padding: 32px 24px; width: 100%; max-width: 380px; box-shadow: var(--shadow-lg); }
-  .auth-logo { text-align: center; margin-bottom: 28px; }
-  .auth-logo .ball { font-size: 52px; display: block; animation: bounce 1.2s infinite alternate; }
-  @keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-8px)} }
-  .auth-logo h1 { font-family: 'Fredoka One', cursive; font-size: 28px; color: var(--verde-dark); margin-top: 8px; }
-  .auth-logo p { font-size: 13px; color: var(--text-sec); margin-top: 4px; font-weight: 600; }
-  .field { margin-bottom: 14px; }
-  .field label { display: block; font-size: 12px; font-weight: 800; color: var(--text-sec); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .6px; }
-  .field input, .field select { width: 100%; padding: 13px 14px; border: 2px solid var(--gris-border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--text); background: var(--gris-light); outline: none; transition: all .2s; appearance: none; }
-  .field input:focus, .field select:focus { border-color: var(--verde-mid); background: var(--white); box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
-  .btn { width: 100%; padding: 14px; border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer; border: none; transition: all .15s; margin-bottom: 8px; }
-  .btn:active { transform: scale(.97); }
-  .btn-primary { background: var(--verde); color: #fff; box-shadow: 0 4px 12px rgba(22,163,74,.3); }
-  .btn-ghost { background: transparent; color: var(--verde-dark); border: 2px solid var(--verde-mid); }
-  .btn-danger { background: var(--rojo); color: #fff; }
-  .btn-warning { background: var(--amarillo); color: var(--verde-dark); }
-  .btn-sm { padding: 8px 14px; font-size: 13px; width: auto; display: inline-block; }
-  .msg { border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; font-weight: 700; margin-bottom: 12px; }
-  .msg-err { background: var(--rojo-light); color: var(--rojo); }
-  .msg-ok { background: var(--verde-light); color: var(--verde-dark); }
-  .msg-info { background: var(--azul-light); color: var(--azul); }
-  .link-btn { background: none; border: none; color: var(--verde-dark); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; display: block; text-align: center; margin-top: 4px; }
+/* ===== AUTH ===== */
+#screen-login, #screen-register {
+  flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px;
+  background: linear-gradient(160deg,#bbf7d0,#f0fdf4 50%,#dcfce7);
+}
+.auth-box { background: var(--white); border-radius: 28px; padding: 36px 28px; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); }
+.auth-logo { text-align: center; margin-bottom: 32px; }
+.auth-logo .ball { font-size: 56px; display: block; animation: bounce 1.2s infinite alternate; }
+@keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-10px)} }
+.auth-logo h1 { font-family: 'Fredoka One', cursive; font-size: 34px; color: var(--verde-dark); margin-top: 10px; letter-spacing: 1px; }
+.auth-logo p { font-size: 15px; color: var(--text-sec); margin-top: 6px; font-weight: 700; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 800; color: var(--text-sec); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .7px; }
+.field input, .field select {
+  width: 100%; padding: 14px 16px; border: 2px solid var(--gris-border);
+  border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif;
+  font-size: 16px; color: var(--text); background: var(--gris-light);
+  outline: none; transition: all .2s; appearance: none;
+}
+.field input:focus, .field select:focus { border-color: var(--verde-mid); background: var(--white); box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
+.btn { width: 100%; padding: 15px; border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; border: none; transition: all .15s; margin-bottom: 10px; letter-spacing: .3px; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--verde); color: #fff; box-shadow: 0 4px 14px rgba(22,163,74,.35); }
+.btn-ghost { background: transparent; color: var(--verde-dark); border: 2px solid var(--verde-mid); }
+.btn-danger { background: var(--rojo); color: #fff; }
+.btn-warning { background: var(--amarillo); color: var(--verde-dark); }
+.btn-sm { padding: 8px 16px; font-size: 13px; width: auto; display: inline-block; margin-bottom: 0; }
+.msg { border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+.msg-err { background: var(--rojo-light); color: var(--rojo); }
+.msg-ok { background: var(--verde-light); color: var(--verde-dark); }
+.msg-info { background: var(--azul-light); color: var(--azul); }
+.link-btn { background: none; border: none; color: var(--verde-dark); font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: underline; display: block; text-align: center; margin-top: 6px; }
 
-  /* MAIN */
-  #screen-main { flex-direction: column; min-height: 100vh; }
-  .header { background: var(--verde); color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
-  .header-left h1 { font-family: 'Fredoka One', cursive; font-size: 18px; }
-  .header-left .header-sub { font-size: 11px; opacity: .85; font-weight: 600; }
-  .btn-logout { background: rgba(255,255,255,.2); border: none; color: #fff; border-radius: 20px; padding: 6px 12px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; }
-  .tabs { display: flex; background: var(--white); border-bottom: 2px solid var(--gris-border); position: sticky; top: 56px; z-index: 99; }
-  .tab { flex: 1; padding: 12px 4px; text-align: center; font-size: 11px; font-weight: 800; color: var(--text-sec); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .2s; }
-  .tab.active { color: var(--verde-dark); border-bottom-color: var(--verde); }
-  .tab-content { display: none; padding: 14px; }
-  .tab-content.active { display: block; }
-  .loading { text-align: center; padding: 30px; color: var(--text-sec); font-weight: 600; font-size: 14px; }
+/* ===== MAIN ===== */
+#screen-main { flex-direction: column; min-height: 100vh; }
+.header {
+  background: linear-gradient(135deg, var(--verde-dark), var(--verde));
+  color: #fff; padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 3px 12px rgba(0,0,0,.2);
+}
+.header-left h1 { font-family: 'Fredoka One', cursive; font-size: 22px; letter-spacing: .5px; }
+.header-left .header-sub { font-size: 13px; opacity: .9; font-weight: 700; margin-top: 2px; color: #bbf7d0; }
+.btn-logout { background: rgba(255,255,255,.2); border: 1.5px solid rgba(255,255,255,.4); color: #fff; border-radius: 20px; padding: 7px 14px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+.tabs { display: flex; background: var(--white); border-bottom: 2px solid var(--gris-border); position: sticky; top: 62px; z-index: 99; box-shadow: 0 2px 6px rgba(0,0,0,.04); }
+.tab { flex: 1; padding: 14px 6px; text-align: center; font-size: 12px; font-weight: 800; color: var(--text-sec); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .2s; }
+.tab.active { color: var(--verde-dark); border-bottom-color: var(--verde); }
+.tab-content { display: none; padding: 16px; }
+.tab-content.active { display: block; }
+.loading { text-align: center; padding: 40px; color: var(--text-sec); font-weight: 700; font-size: 15px; }
+.banner { border-radius: var(--radius); padding: 14px 16px; font-size: 14px; font-weight: 700; margin-bottom: 14px; line-height: 1.5; }
+.banner-ok { background: var(--verde-light); color: var(--verde-dark); }
+.banner-info { background: var(--azul-light); color: var(--azul); }
+.banner-warn { background: var(--amarillo-light); color: #92400e; }
 
-  /* ALBUM */
-  .album-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
-  .stat-card { background: var(--white); border-radius: var(--radius); padding: 10px 8px; text-align: center; box-shadow: var(--shadow); }
-  .stat-card-n { font-size: 22px; font-weight: 800; }
-  .stat-card-l { font-size: 11px; color: var(--text-sec); font-weight: 600; margin-top: 2px; }
-  .region-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; scrollbar-width: none; }
-  .region-chips::-webkit-scrollbar { display: none; }
-  .region-chip { white-space: nowrap; padding: 6px 13px; border-radius: 20px; font-size: 12px; font-weight: 700; border: 2px solid var(--gris-border); color: var(--text-sec); background: var(--white); cursor: pointer; flex-shrink: 0; }
-  .region-chip.active { background: var(--verde); color: #fff; border-color: var(--verde); }
-  .fig-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-  .leg { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--text-sec); }
-  .leg-dot { width: 10px; height: 10px; border-radius: 3px; }
-  .pais-section { background: var(--white); border-radius: var(--radius); margin-bottom: 10px; box-shadow: var(--shadow); overflow: hidden; }
-  .pais-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; user-select: none; }
-  .pais-header-left { display: flex; align-items: center; gap: 10px; }
-  .pais-flag img { width: 28px; height: 20px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
-  .pais-name { font-size: 14px; font-weight: 800; }
-  .pais-prog-row { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
-  .pais-prog-bar { width: 60px; height: 4px; background: var(--gris-border); border-radius: 2px; }
-  .pais-prog-fill { height: 100%; background: var(--verde-mid); border-radius: 2px; transition: width .4s; }
-  .pais-prog-text { font-size: 11px; color: var(--text-sec); font-weight: 700; }
-  .pais-chevron { color: var(--text-sec); font-size: 11px; transition: transform .2s; }
-  .pais-chevron.open { transform: rotate(180deg); }
-  .pais-body { display: none; padding: 0 14px 14px; border-top: 1px solid var(--gris-border); }
-  .pais-body.open { display: block; }
-  .fig-grid { display: grid; grid-template-columns: repeat(10,1fr); gap: 4px; margin-top: 10px; }
-  .fig { aspect-ratio: 1; border-radius: 5px; border: 2px solid var(--gris-border); font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; background: var(--gris-light); color: var(--gris); transition: transform .1s; user-select: none; }
-  .fig:active { transform: scale(.82); }
-  .fig.tengo { background: #bbf7d0; color: #14532d; border-color: #16a34a; }
-  .fig.repetida { background: #fef08a; color: #713f12; border-color: #ca8a04; }
-  .fig.falta { background: #fecaca; color: #7f1d1d; border-color: #dc2626; }
+/* ===== ALBUM ===== */
+.album-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+.stat-card { background: var(--white); border-radius: var(--radius); padding: 12px 8px; text-align: center; box-shadow: var(--shadow); }
+.stat-card-n { font-size: 26px; font-weight: 900; }
+.stat-card-l { font-size: 12px; color: var(--text-sec); font-weight: 700; margin-top: 3px; }
+.region-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; scrollbar-width: none; }
+.region-chips::-webkit-scrollbar { display: none; }
+.region-chip { white-space: nowrap; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 2px solid var(--gris-border); color: var(--text-sec); background: var(--white); cursor: pointer; flex-shrink: 0; }
+.region-chip.active { background: var(--verde); color: #fff; border-color: var(--verde); }
+.fig-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.leg { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--text-sec); }
+.leg-dot { width: 14px; height: 14px; border-radius: 4px; }
 
-  /* CAMBIOS */
-  .banner { border-radius: var(--radius); padding: 12px 14px; font-size: 13px; font-weight: 700; margin-bottom: 14px; }
-  .banner-ok { background: var(--verde-light); color: var(--verde-dark); }
-  .banner-info { background: var(--azul-light); color: var(--azul); }
-  .banner-warn { background: var(--amarillo-light); color: #92400e; }
-  .user-card { background: var(--white); border-radius: var(--radius); margin-bottom: 12px; box-shadow: var(--shadow); overflow: hidden; }
-  .user-card-header { padding: 12px 14px; display: flex; align-items: flex-start; justify-content: space-between; }
-  .user-card-name { font-size: 15px; font-weight: 800; }
-  .user-card-sub { font-size: 12px; color: var(--text-sec); font-weight: 600; margin-top: 2px; }
-  .match-badge { background: var(--verde); color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 12px; font-weight: 800; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
-  .match-badge-partial { background: var(--amarillo); color: var(--verde-dark); border-radius: 20px; padding: 4px 10px; font-size: 12px; font-weight: 800; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
-  .user-card-body { padding: 0 14px 14px; border-top: 1px solid var(--gris-border); }
-  .match-section-title { font-size: 11px; font-weight: 800; color: var(--text-sec); text-transform: uppercase; letter-spacing: .5px; margin-top: 10px; margin-bottom: 5px; }
-  .figs-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-  .fchip { font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 5px; }
-  .fchip-doy { background: var(--azul-light); color: var(--azul); }
-  .fchip-recibo { background: var(--naranja-light); color: var(--naranja); }
-  .fchip-more { background: var(--gris-light); color: var(--gris); }
+/* PAIS CARDS */
+.pais-section { background: var(--white); border-radius: var(--radius); margin-bottom: 12px; box-shadow: var(--shadow); overflow: hidden; border: 2px solid transparent; transition: border-color .3s; }
+.pais-completo { border-color: var(--verde) !important; }
+.pais-completo .pais-header { background: linear-gradient(135deg, #dcfce7, #f0fdf4); }
+.pais-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; transition: background .2s; }
+.pais-header:active { background: var(--gris-light); }
+.pais-header-left { display: flex; align-items: center; gap: 10px; }
+.pais-star { font-size: 18px; }
+.pais-flag img { width: 32px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.pais-name { font-size: 15px; font-weight: 800; }
+.pais-prog-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.pais-prog-bar { width: 70px; height: 5px; background: var(--gris-border); border-radius: 3px; }
+.pais-prog-fill { height: 100%; background: var(--verde-mid); border-radius: 3px; transition: width .4s; }
+.pais-prog-text { font-size: 12px; color: var(--text-sec); font-weight: 700; }
+.pais-chevron { color: var(--text-sec); font-size: 12px; transition: transform .25s; }
+.pais-chevron.open { transform: rotate(180deg); }
+.pais-body { display: none; padding: 0 14px 16px; border-top: 1px solid var(--gris-border); }
+.pais-body.open { display: block; }
 
-  /* TIENDA */
-  .shop-hero { background: linear-gradient(135deg, var(--verde-dark), var(--verde)); border-radius: var(--radius); padding: 20px; text-align: center; color: #fff; margin-bottom: 16px; }
-  .shop-hero h2 { font-family: 'Fredoka One', cursive; font-size: 22px; margin-bottom: 4px; }
-  .shop-hero p { font-size: 13px; opacity: .85; font-weight: 600; }
-  .shop-card { background: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 14px; }
-  .shop-card h3 { font-size: 15px; font-weight: 800; margin-bottom: 16px; color: var(--text); }
-  .qty-control { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
-  .qty-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--verde); background: var(--white); color: var(--verde-dark); font-size: 22px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; font-family: 'Nunito', sans-serif; }
-  .qty-btn:active { background: var(--verde-light); transform: scale(.92); }
-  .qty-btn:disabled { border-color: var(--gris-border); color: var(--gris); cursor: not-allowed; }
-  .qty-display { text-align: center; min-width: 80px; }
-  .qty-num { font-family: 'Fredoka One', cursive; font-size: 40px; color: var(--verde-dark); line-height: 1; }
-  .qty-label { font-size: 12px; color: var(--text-sec); font-weight: 700; margin-top: 2px; }
-  .shop-detail { background: var(--gris-light); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 14px; }
-  .shop-detail-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13px; color: var(--text-sec); font-weight: 600; }
-  .shop-detail-row:last-child { margin-bottom: 0; border-top: 1px solid var(--gris-border); padding-top: 8px; font-weight: 800; font-size: 15px; color: var(--text); }
-  .shop-detail-row span:last-child { font-weight: 800; color: var(--text); }
-  .alias-box { background: var(--verde-light); border: 2px solid var(--verde-mid); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
-  .alias-box .alias-label { font-size: 11px; font-weight: 800; color: var(--verde-dark); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
-  .alias-box .alias-value { font-size: 16px; font-weight: 800; color: var(--verde-dark); font-family: monospace; }
-  .copy-btn { background: var(--verde); color: #fff; border: none; border-radius: 8px; padding: 8px 12px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; cursor: pointer; }
-  .btn-whatsapp { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; box-shadow: 0 4px 12px rgba(37,211,102,.35); }
-  .shop-info { font-size: 12px; color: var(--text-sec); text-align: center; margin-top: 8px; font-weight: 600; }
-  .min-badge { display: inline-block; background: var(--amarillo-light); color: #92400e; border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 800; margin-bottom: 14px; }
+/* FIG GRID — 5 cols, bigger */
+.fig-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-top: 12px; }
+.fig {
+  aspect-ratio: 1; border-radius: 8px; border: 2px solid var(--gris-border);
+  font-size: 10px; font-weight: 800; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; cursor: pointer;
+  background: var(--gris-light); color: var(--gris);
+  transition: transform .1s; user-select: none; padding: 3px; text-align: center; line-height: 1.2;
+}
+.fig:active { transform: scale(.85); }
+.fig .fig-num { font-size: 13px; font-weight: 900; }
+.fig .fig-name { font-size: 8px; font-weight: 700; margin-top: 1px; opacity: .85; }
+.fig.tengo { background: #bbf7d0; color: #14532d; border-color: #16a34a; }
+.fig.repetida { background: #fef08a; color: #713f12; border-color: #ca8a04; }
+.fig.falta { background: #fecaca; color: #7f1d1d; border-color: #dc2626; }
 
-  /* ADMIN */
-  #screen-admin { flex-direction: column; min-height: 100vh; background: linear-gradient(160deg,#fef9c3,#fffbeb); }
-  .admin-header { background: var(--amarillo); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-  .admin-header h1 { font-family: 'Fredoka One', cursive; font-size: 18px; color: var(--verde-dark); }
-  .admin-content { padding: 16px; }
-  .admin-section { background: var(--white); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
-  .admin-section h2 { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 12px; border-bottom: 2px solid var(--gris-border); padding-bottom: 8px; }
-  .user-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--gris-border); }
-  .user-row:last-child { border-bottom: none; }
-  .user-row-name { font-weight: 800; font-size: 13px; }
-  .user-row-detail { color: var(--text-sec); font-size: 12px; margin-top: 2px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-  .badge-curso { background: var(--azul-light); color: var(--azul); }
-  .price-row { display: flex; align-items: center; gap: 10px; }
-  .price-input { flex: 1; padding: 10px 14px; border: 2px solid var(--gris-border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700; outline: none; }
+/* ===== CAMBIOS ===== */
+.user-card { background: var(--white); border-radius: var(--radius); margin-bottom: 14px; box-shadow: var(--shadow); overflow: hidden; }
+.user-card-header { padding: 14px 16px; display: flex; align-items: flex-start; justify-content: space-between; }
+.user-card-name { font-size: 16px; font-weight: 800; }
+.user-card-sub { font-size: 13px; color: var(--text-sec); font-weight: 600; margin-top: 3px; }
+.match-badge { background: var(--verde); color: #fff; border-radius: 20px; padding: 5px 12px; font-size: 13px; font-weight: 800; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
+.match-badge-partial { background: var(--amarillo); color: var(--verde-dark); border-radius: 20px; padding: 5px 12px; font-size: 13px; font-weight: 800; white-space: nowrap; flex-shrink: 0; margin-left: 8px; }
+.user-card-body { padding: 0 16px 16px; border-top: 1px solid var(--gris-border); }
+.match-section-title { font-size: 12px; font-weight: 800; color: var(--text-sec); text-transform: uppercase; letter-spacing: .5px; margin-top: 12px; margin-bottom: 6px; }
+.figs-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.fchip { font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
+.fchip-doy { background: var(--azul-light); color: var(--azul); }
+.fchip-recibo { background: var(--naranja-light); color: var(--naranja); }
+.fchip-more { background: var(--gris-light); color: var(--gris); }
+
+/* ===== TIENDA ===== */
+.shop-hero { background: linear-gradient(135deg,var(--verde-dark),var(--verde)); border-radius: var(--radius); padding: 24px; text-align: center; color: #fff; margin-bottom: 18px; }
+.shop-hero h2 { font-family: 'Fredoka One', cursive; font-size: 24px; margin-bottom: 6px; }
+.shop-hero p { font-size: 14px; opacity: .85; font-weight: 600; }
+.shop-card { background: var(--white); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.shop-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 18px; }
+.qty-control { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 18px; }
+.qty-btn { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--verde); background: var(--white); color: var(--verde-dark); font-size: 26px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; font-family: 'Nunito', sans-serif; }
+.qty-btn:active { background: var(--verde-light); transform: scale(.92); }
+.qty-btn:disabled { border-color: var(--gris-border); color: var(--gris); cursor: not-allowed; }
+.qty-display { text-align: center; min-width: 90px; }
+.qty-num { font-family: 'Fredoka One', cursive; font-size: 48px; color: var(--verde-dark); line-height: 1; }
+.qty-label { font-size: 13px; color: var(--text-sec); font-weight: 700; margin-top: 2px; }
+.shop-detail { background: var(--gris-light); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 16px; }
+.shop-detail-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14px; color: var(--text-sec); font-weight: 600; }
+.shop-detail-row:last-child { margin-bottom: 0; border-top: 2px solid var(--gris-border); padding-top: 10px; font-weight: 800; font-size: 16px; color: var(--text); }
+.shop-detail-row span:last-child { font-weight: 800; color: var(--text); }
+.alias-box { background: var(--verde-light); border: 2px solid var(--verde-mid); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.alias-label { font-size: 12px; font-weight: 800; color: var(--verde-dark); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
+.alias-value { font-size: 17px; font-weight: 800; color: var(--verde-dark); font-family: monospace; }
+.copy-btn { background: var(--verde); color: #fff; border: none; border-radius: 8px; padding: 10px 14px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; flex-shrink: 0; }
+.btn-whatsapp { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 17px; box-shadow: 0 4px 14px rgba(37,211,102,.35); }
+.shop-paused { text-align: center; padding: 40px 20px; }
+.shop-paused span { font-size: 48px; display: block; margin-bottom: 14px; }
+.shop-paused p { font-size: 16px; font-weight: 700; color: var(--text-sec); }
+.min-badge { display: inline-block; background: var(--amarillo-light); color: #92400e; border-radius: 8px; padding: 5px 12px; font-size: 13px; font-weight: 800; margin-bottom: 16px; }
+
+/* ESPECIALES */
+.especiales-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 14px; }
+.especial-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; border: 2px solid var(--gris-border); }
+.especial-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; background: var(--gris-light); }
+.especial-img-placeholder { width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg,#e5e7eb,#f3f4f6); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+.especial-info { padding: 10px 12px; }
+.especial-name { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+.especial-price { font-size: 15px; font-weight: 900; color: var(--verde-dark); }
+.btn-especial { width: 100%; padding: 8px; font-size: 13px; font-weight: 800; background: var(--verde); color: #fff; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px; font-family: 'Nunito', sans-serif; }
+
+/* ===== ADMIN ===== */
+#screen-admin { flex-direction: column; min-height: 100vh; background: linear-gradient(160deg,#fef9c3,#fffbeb); }
+.admin-header { background: linear-gradient(135deg,#ca8a04,var(--amarillo)); padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+.admin-header h1 { font-family: 'Fredoka One', cursive; font-size: 22px; color: var(--verde-dark); }
+.admin-content { padding: 16px; }
+.admin-section { background: var(--white); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.admin-section h2 { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 14px; border-bottom: 2px solid var(--gris-border); padding-bottom: 10px; }
+.user-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--gris-border); }
+.user-row:last-child { border-bottom: none; }
+.user-row-name { font-weight: 800; font-size: 14px; }
+.user-row-detail { color: var(--text-sec); font-size: 13px; margin-top: 3px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.badge-curso { background: var(--azul-light); color: var(--azul); }
+.price-row { display: flex; align-items: center; gap: 10px; }
+.price-input { flex: 1; padding: 12px 14px; border: 2px solid var(--gris-border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 700; outline: none; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+.toggle-label { font-size: 14px; font-weight: 700; }
+.toggle { position: relative; width: 52px; height: 28px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: var(--gris-border); border-radius: 28px; cursor: pointer; transition: .3s; }
+.toggle-slider:before { content: ''; position: absolute; width: 22px; height: 22px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .3s; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+input:checked + .toggle-slider { background: var(--verde); }
+input:checked + .toggle-slider:before { transform: translateX(24px); }
+
+/* ADMIN ESPECIALES */
+.especial-admin-card { background: var(--gris-light); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
+.especial-admin-thumb { width: 48px; height: 64px; object-fit: cover; border-radius: 6px; background: var(--gris-border); flex-shrink: 0; }
+.especial-admin-info { flex: 1; }
+.especial-admin-name { font-size: 13px; font-weight: 800; }
+.especial-admin-price { font-size: 13px; color: var(--verde-dark); font-weight: 700; }
+.add-especial-form { background: var(--gris-light); border-radius: var(--radius-sm); padding: 14px; margin-top: 12px; }
+.add-especial-form input { width: 100%; padding: 10px 12px; border: 2px solid var(--gris-border); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 14px; margin-bottom: 10px; outline: none; }
+.add-especial-form input:focus { border-color: var(--verde-mid); }
 </style>
 </head>
 <body>
@@ -183,7 +244,7 @@
       <p>Completa tus datos</p>
     </div>
     <div id="register-msg"></div>
-    <div class="field"><label>Usuario (para ingresar)</label><input type="text" id="reg-user" placeholder="ej: juancito" autocapitalize="none" autocomplete="off"/></div>
+    <div class="field"><label>Usuario</label><input type="text" id="reg-user" placeholder="ej: juancito" autocapitalize="none" autocomplete="off"/></div>
     <div class="field"><label>Apodo o nombre real</label><input type="text" id="reg-apodo" placeholder="ej: El Pulga"/></div>
     <div class="field">
       <label>Curso</label>
@@ -221,79 +282,74 @@
     <div class="album-stats" id="album-stats"></div>
     <div class="region-chips" id="region-chips"></div>
     <div class="fig-legend">
-      <div class="leg"><div class="leg-dot" style="background:var(--verde-light);border:2px solid var(--verde-mid)"></div>Tengo</div>
-      <div class="leg"><div class="leg-dot" style="background:var(--naranja-light);border:2px solid var(--naranja)"></div>Repetida</div>
-      <div class="leg"><div class="leg-dot" style="background:var(--rojo-light);border:2px solid var(--rojo)"></div>Me falta</div>
+      <div class="leg"><div class="leg-dot" style="background:#bbf7d0;border:2px solid #16a34a"></div>Tengo</div>
+      <div class="leg"><div class="leg-dot" style="background:#fef08a;border:2px solid #ca8a04"></div>Repetida</div>
+      <div class="leg"><div class="leg-dot" style="background:#fecaca;border:2px solid #dc2626"></div>Me falta</div>
     </div>
     <div id="album-paises"></div>
   </div>
 
   <!-- CAMBIOS -->
   <div id="tab-cambios" class="tab-content">
+    <div class="region-chips" id="cambios-chips">
+      <button class="region-chip active" onclick="setCambiosFilter('todos')">Todos</button>
+      <button class="region-chip" onclick="setCambiosFilter('primaria')">&#x1F4D5; Primaria</button>
+      <button class="region-chip" onclick="setCambiosFilter('secundaria')">&#x1F4D8; Secundaria</button>
+    </div>
     <div id="cambios-content"><div class="loading">Cargando...</div></div>
   </div>
 
   <!-- COMPRAR -->
   <div id="tab-comprar" class="tab-content">
-    <div class="shop-hero">
-      <h2>&#x1F4E6; Comprar Paquetes</h2>
-      <p>Cada paquete trae 5 figuritas sorpresa</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>&#x1F4CA; Cantidad de paquetes</h3>
-      <div class="min-badge">&#x26A0; Minimo 5 paquetes</div>
-      <div class="qty-control">
-        <button class="qty-btn" id="btn-menos" onclick="cambiarCantidad(-1)">-</button>
-        <div class="qty-display">
-          <div class="qty-num" id="qty-num">5</div>
-          <div class="qty-label">paquetes</div>
-        </div>
-        <button class="qty-btn" onclick="cambiarCantidad(1)">+</button>
-      </div>
-
-      <div class="shop-detail" id="shop-detail"></div>
-
-      <div class="alias-box">
-        <div>
-          <div class="alias-label">Alias Mercado Pago</div>
-          <div class="alias-value" id="alias-display">matias.cordoba2011</div>
-        </div>
-        <button class="copy-btn" onclick="copyAlias()">Copiar</button>
-      </div>
-
-      <button class="btn btn-whatsapp" onclick="pedirPorWhatsApp()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Pedir por WhatsApp
-      </button>
-      <p class="shop-info">Te vamos a contactar para coordinar la entrega</p>
-      <div style="margin-top:16px;padding:14px;background:var(--gris-light);border-radius:var(--radius-sm);font-size:12px;color:var(--text-sec);line-height:1.6;">
-        <p style="font-weight:700;margin-bottom:6px;">&#x1F4AC; FigusMatch es gratuita y sin fines de lucro.</p>
-        <p>Esta app fue creada para facilitar el intercambio de figuritas entre usuarios. No nos responsabilizamos por el valor que cada usuario le asigne a sus figuritas &mdash; cada uno puede pedir lo que considere justo por la figurita de Messi o cualquier otra.</p>
-        <p style="margin-top:8px;font-weight:700;color:var(--verde-dark);">&#x1F64C; Si la app te resulta util, comprar paquetes es la mejor forma de apoyar que siga funcionando. &#x1F64F; Gracias por ser parte!</p>
-      </div>
-    </div>
+    <div id="comprar-content"></div>
   </div>
 </div>
 
 <!-- ADMIN -->
 <div id="screen-admin" class="screen">
   <div class="admin-header">
-    <h1>Panel Admin</h1>
-    <button class="btn-logout" style="background:rgba(0,0,0,.1);color:var(--verde-dark);" onclick="showScreen('screen-login')">Salir</button>
+    <h1>&#x1F510; Panel Admin</h1>
+    <button class="btn-logout" style="background:rgba(0,0,0,.1);color:var(--verde-dark);border-color:rgba(0,0,0,.2);" onclick="showScreen('screen-login')">Salir</button>
   </div>
   <div class="admin-content">
     <div id="admin-msg"></div>
+
+    <!-- Tienda toggle -->
     <div class="admin-section">
-      <h2>Precio por paquete</h2>
+      <h2>&#x1F6D2; Control de Tienda</h2>
+      <div class="toggle-row">
+        <span class="toggle-label">Compra de paquetes</span>
+        <label class="toggle"><input type="checkbox" id="toggle-tienda" onchange="saveToggleTienda()"/><span class="toggle-slider"></span></label>
+      </div>
+      <p style="font-size:13px;color:var(--text-sec);margin-top:6px;">Cuando esta desactivado, los usuarios ven la tienda pausada.</p>
+    </div>
+
+    <!-- Precio -->
+    <div class="admin-section">
+      <h2>&#x1F4B0; Precio por paquete</h2>
       <div class="price-row">
         <input class="price-input" type="number" id="admin-precio" placeholder="2200"/>
         <button class="btn btn-warning btn-sm" onclick="savePrecio()">Guardar</button>
       </div>
-      <p style="font-size:12px;color:var(--text-sec);margin-top:8px;">Precio actual: <strong id="precio-actual">cargando...</strong></p>
+      <p style="font-size:13px;color:var(--text-sec);margin-top:8px;">Precio actual: <strong id="precio-actual">cargando...</strong></p>
     </div>
+
+    <!-- Figuritas especiales -->
     <div class="admin-section">
-      <h2>Usuarios registrados</h2>
+      <h2>&#x2B50; Figuritas Especiales</h2>
+      <div id="admin-especiales-list"></div>
+      <div class="add-especial-form">
+        <p style="font-size:13px;font-weight:800;margin-bottom:10px;">Agregar figurita especial:</p>
+        <input type="text" id="esp-nombre" placeholder="Nombre (ej: Messi Oro)"/>
+        <input type="number" id="esp-precio" placeholder="Precio"/>
+        <input type="text" id="esp-img" placeholder="URL de la imagen"/>
+        <button class="btn btn-primary btn-sm" style="width:100%;margin-top:4px;" onclick="addEspecial()">Agregar</button>
+      </div>
+    </div>
+
+    <!-- Usuarios -->
+    <div class="admin-section">
+      <h2>&#x1F464; Usuarios registrados</h2>
       <div id="admin-users-list"><div class="loading">Cargando...</div></div>
     </div>
   </div>
@@ -301,9 +357,9 @@
 
 <!-- Modal reset -->
 <div id="modal-reset" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:24px;">
-  <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:340px;">
-    <h3 style="font-size:16px;font-weight:800;margin-bottom:4px;">Resetear contrasena</h3>
-    <p style="font-size:13px;color:var(--text-sec);margin-bottom:16px;">Usuario: <strong id="reset-username"></strong></p>
+  <div style="background:#fff;border-radius:24px;padding:28px;width:100%;max-width:360px;box-shadow:var(--shadow-lg);">
+    <h3 style="font-size:18px;font-weight:800;margin-bottom:6px;">Resetear contrasena</h3>
+    <p style="font-size:14px;color:var(--text-sec);margin-bottom:18px;">Usuario: <strong id="reset-username"></strong></p>
     <div class="field"><label>Nueva contrasena</label><input type="text" id="reset-newpass" placeholder="ej: 1234"/></div>
     <div id="reset-msg"></div>
     <button class="btn btn-danger" onclick="confirmReset()">Resetear</button>
@@ -325,9 +381,9 @@ const firebaseConfig = {
   appId: "1:941419282449:web:794a53518f618aaf0331b0"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getDatabase(firebaseApp);
-const ADMIN_PASS = "admin2026";
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+const ADMIN_PASS = "mabeto1980";
 const WA_NUMBER = "5491158746405";
 const ALIAS_MP = "matias.cordoba2011";
 const MIN_PAQUETES = 5;
@@ -337,26 +393,37 @@ let myAlbum = {};
 let saveTimeout = null;
 let resetTarget = null;
 let currentRegion = "Todos";
+let cambiosFilter = "todos";
+let cambiosData = null;
 let precioPaquete = 2200;
-let cantPaquetes = 5;
+let cantPaquetes = MIN_PAQUETES;
+let tiendaActiva = false;
 
-// ===== 48 PAISES CLASIFICADOS MUNDIAL 2026 =====
+const PRIMARIA = ['J1','J2','J3','J4','J5','J6'];
+const SECUNDARIA = ['M1','M2','M3','S1','S2'];
+
+// Argentina player names
+const ARG_NAMES = {
+  1:'Escudo', 2:'Emiliano Mtz', 3:'Molina', 4:'C. Romero',
+  5:'Otamendi', 6:'Tagliafico', 7:'Balerdi', 8:'E. Fernandez',
+  9:'Mac Allister', 10:'De Paul', 11:'Palacios', 12:'Paredes',
+  13:'Equipo', 14:'Nico Paz', 15:'Mastantuono', 16:'N. Gonzalez',
+  17:'Messi', 18:'Lautaro Mtz', 19:'J. Alvarez', 20:'G. Simeone'
+};
+
 const PAISES = [
-  // CONCACAF (6)
   { id:"MEX", nombre:"Mexico",          cc:"mx",     region:"CONCACAF" },
   { id:"USA", nombre:"Estados Unidos",  cc:"us",     region:"CONCACAF" },
   { id:"CAN", nombre:"Canada",          cc:"ca",     region:"CONCACAF" },
   { id:"HAI", nombre:"Haiti",           cc:"ht",     region:"CONCACAF" },
   { id:"PAN", nombre:"Panama",          cc:"pa",     region:"CONCACAF" },
   { id:"CUW", nombre:"Curazao",         cc:"cw",     region:"CONCACAF" },
-  // CONMEBOL (6)
   { id:"ARG", nombre:"Argentina",       cc:"ar",     region:"CONMEBOL" },
   { id:"BRA", nombre:"Brasil",          cc:"br",     region:"CONMEBOL" },
   { id:"COL", nombre:"Colombia",        cc:"co",     region:"CONMEBOL" },
   { id:"URU", nombre:"Uruguay",         cc:"uy",     region:"CONMEBOL" },
   { id:"ECU", nombre:"Ecuador",         cc:"ec",     region:"CONMEBOL" },
   { id:"PAR", nombre:"Paraguay",        cc:"py",     region:"CONMEBOL" },
-  // UEFA (16)
   { id:"ENG", nombre:"Inglaterra",      cc:"gb-eng", region:"UEFA" },
   { id:"FRA", nombre:"Francia",         cc:"fr",     region:"UEFA" },
   { id:"ESP", nombre:"Espana",          cc:"es",     region:"UEFA" },
@@ -373,7 +440,6 @@ const PAISES = [
   { id:"TUR", nombre:"Turquia",         cc:"tr",     region:"UEFA" },
   { id:"CZE", nombre:"Rep. Checa",      cc:"cz",     region:"UEFA" },
   { id:"BIH", nombre:"Bosnia y Herz.",  cc:"ba",     region:"UEFA" },
-  // AFC (9)
   { id:"JPN", nombre:"Japon",           cc:"jp",     region:"AFC" },
   { id:"IRN", nombre:"Iran",            cc:"ir",     region:"AFC" },
   { id:"KOR", nombre:"Corea del Sur",   cc:"kr",     region:"AFC" },
@@ -383,7 +449,6 @@ const PAISES = [
   { id:"SAU", nombre:"Arabia Saudita",  cc:"sa",     region:"AFC" },
   { id:"QAT", nombre:"Qatar",           cc:"qa",     region:"AFC" },
   { id:"IRQ", nombre:"Irak",            cc:"iq",     region:"AFC" },
-  // CAF (10)
   { id:"MAR", nombre:"Marruecos",       cc:"ma",     region:"CAF" },
   { id:"TUN", nombre:"Tunez",           cc:"tn",     region:"CAF" },
   { id:"ALG", nombre:"Argelia",         cc:"dz",     region:"CAF" },
@@ -394,7 +459,6 @@ const PAISES = [
   { id:"CIV", nombre:"Costa de Marfil", cc:"ci",     region:"CAF" },
   { id:"RSA", nombre:"Sudafrica",       cc:"za",     region:"CAF" },
   { id:"COD", nombre:"RD Congo",        cc:"cd",     region:"CAF" },
-  // OFC (1)
   { id:"NZL", nombre:"Nueva Zelanda",   cc:"nz",     region:"OFC" },
 ];
 
@@ -416,7 +480,7 @@ window.showTab = function(tab) {
   document.getElementById('tab-'+tab).classList.add('active');
   document.querySelectorAll('.tab')[['album','cambios','comprar'].indexOf(tab)].classList.add('active');
   if (tab === 'cambios') loadCambios();
-  if (tab === 'comprar') initShop();
+  if (tab === 'comprar') renderComprar();
 };
 
 // ===== AUTH =====
@@ -431,13 +495,17 @@ window.doLogin = async function() {
     const data = snap.val();
     if (data.pass !== btoa(p)) return showMsg('login-msg','Contrasena incorrecta','err');
     currentUser = {id:u,...data};
-    const albumSnap = await get(child(ref(db),'albums/'+u));
+    const [albumSnap, precioSnap, tiendaSnap] = await Promise.all([
+      get(child(ref(db),'albums/'+u)),
+      get(child(ref(db),'config/precio')),
+      get(child(ref(db),'config/tienda_activa'))
+    ]);
     myAlbum = albumSnap.exists() ? (albumSnap.val()||{}) : {};
-    // Cargar precio
-    const precioSnap = await get(child(ref(db),'config/precio'));
     if (precioSnap.exists()) precioPaquete = precioSnap.val();
-    document.getElementById('header-sub').textContent = data.apodo+' - '+data.curso;
-    document.getElementById('login-msg').innerHTML='';
+    tiendaActiva = tiendaSnap.exists() ? tiendaSnap.val() : false;
+    localStorage.setItem('figus_user', u);
+    document.getElementById('header-sub').textContent = data.apodo + ' · ' + data.curso;
+    document.getElementById('login-msg').innerHTML = '';
     showScreen('screen-main');
     renderAlbum();
   } catch(e) { showMsg('login-msg','Error: '+e.message,'err'); }
@@ -458,9 +526,14 @@ window.doRegister = async function() {
     await set(ref(db,'users/'+u),{pass:btoa(p),apodo,curso,created:Date.now()});
     currentUser = {id:u,apodo,curso};
     myAlbum = {};
-    const precioSnap = await get(child(ref(db),'config/precio'));
+    const [precioSnap, tiendaSnap] = await Promise.all([
+      get(child(ref(db),'config/precio')),
+      get(child(ref(db),'config/tienda_activa'))
+    ]);
     if (precioSnap.exists()) precioPaquete = precioSnap.val();
-    document.getElementById('header-sub').textContent = apodo+' - '+curso;
+    tiendaActiva = tiendaSnap.exists() ? tiendaSnap.val() : false;
+    localStorage.setItem('figus_user', u);
+    document.getElementById('header-sub').textContent = apodo + ' · ' + curso;
     showScreen('screen-main');
     renderAlbum();
   } catch(e) { showMsg('register-msg','Error: '+e.message,'err'); }
@@ -492,16 +565,18 @@ window.setRegion = function(r) {
 };
 
 function renderStats() {
-  let tengo=0,rep=0,falta=0;
+  const TOTAL = PAISES.length * 20 + 20;
+  let tengo=0, rep=0, falta=0;
   for (const v of Object.values(myAlbum)) {
     if (v==='tengo') tengo++;
     else if (v==='repetida') rep++;
     else if (v==='falta') falta++;
   }
+  falta += TOTAL - tengo - rep - falta;
   document.getElementById('album-stats').innerHTML =
-    statCard(tengo,'Tengo','var(--verde-dark)')+
-    statCard(rep,'Repetidas','var(--naranja)')+
-    statCard(falta,'Me faltan','var(--rojo)');
+    statCard(tengo,'Tengo','#14532d')+
+    statCard(rep,'Repetidas','#713f12')+
+    statCard(falta,'Me faltan','#7f1d1d');
 }
 
 function statCard(n,label,color) {
@@ -511,41 +586,63 @@ function statCard(n,label,color) {
 function renderPaises() {
   const el = document.getElementById('album-paises');
   const filtered = currentRegion==='Todos' ? PAISES : PAISES.filter(p=>p.region===currentRegion);
-  let html='';
-  for (const pais of filtered) {
-    const tengo=countPais(pais.id,'tengo'), pct=Math.round((tengo/20)*100);
-    html+='<div class="pais-section" id="sec-'+pais.id+'">';
-    html+='<div class="pais-header" onclick="togglePais(\''+pais.id+'\')">';
-    html+='<div class="pais-header-left"><div class="pais-flag">'+flagImg(pais.cc)+'</div>';
-    html+='<div><div class="pais-name">'+pais.nombre+'</div>';
-    html+='<div class="pais-prog-row"><div class="pais-prog-bar"><div class="pais-prog-fill" style="width:'+pct+'%"></div></div>';
-    html+='<div class="pais-prog-text">'+tengo+'/20</div></div></div></div>';
-    html+='<div class="pais-chevron" id="chev-'+pais.id+'">&#x25BC;</div></div>';
-    html+='<div class="pais-body" id="body-'+pais.id+'"><div class="fig-grid">';
-    for (let i=1;i<=20;i++) {
-      const key=pais.id+'_'+i, st=myAlbum[key]||'sin';
-      html+='<div class="fig'+(st==='sin'?'':' '+st)+'" onclick="toggleFig(\''+key+'\')">'+i+'</div>';
-    }
-    html+='</div></div></div>';
+  const sorted = [...filtered].sort((a,b)=>{
+    const tA=countPais(a.id,'tengo'), tB=countPais(b.id,'tengo');
+    if (tA===20 && tB!==20) return -1;
+    if (tB===20 && tA!==20) return 1;
+    return tB-tA;
+  });
+  let html = sorted.map(pais => buildPaisHtml(pais)).join('');
+  if (currentRegion==='Todos') html += buildFCHtml();
+  el.innerHTML = html;
+}
+
+function buildPaisHtml(pais) {
+  const tengo = countPais(pais.id,'tengo');
+  const pct = Math.round((tengo/20)*100);
+  const completo = tengo===20;
+  let html = '<div class="pais-section'+(completo?' pais-completo':'')+'" id="sec-'+pais.id+'">';
+  html += '<div class="pais-header" onclick="togglePais(\''+pais.id+'\')">';
+  html += '<div class="pais-header-left">';
+  if (completo) html += '<div class="pais-star">&#x2B50;</div>';
+  html += '<div class="pais-flag">'+flagImg(pais.cc)+'</div>';
+  html += '<div><div class="pais-name" style="'+(completo?'color:var(--verde-dark);':'')+'">'+pais.nombre+'</div>';
+  html += '<div class="pais-prog-row"><div class="pais-prog-bar"><div class="pais-prog-fill" style="width:'+pct+'%"></div></div>';
+  html += '<div class="pais-prog-text" style="'+(completo?'color:var(--verde-dark);font-weight:900;':'')+'">'+tengo+'/20'+(completo?' &#x2713;':'')+'</div>';
+  html += '</div></div></div>';
+  html += '<div class="pais-chevron" id="chev-'+pais.id+'">&#x25BC;</div></div>';
+  html += '<div class="pais-body" id="body-'+pais.id+'"><div class="fig-grid">';
+  for (let i=1;i<=20;i++) {
+    const key=pais.id+'_'+i;
+    const st=myAlbum[key]||'falta';
+    const name = pais.id==='ARG' && ARG_NAMES[i] ? ARG_NAMES[i] : '';
+    html += '<div class="fig'+(st==='sin'?'':' '+st)+'" onclick="toggleFig(\''+key+'\')"><div class="fig-num">'+i+'</div>'+(name?'<div class="fig-name">'+name+'</div>':'')+'</div>';
   }
-  // FC especiales
-  if (currentRegion==='Todos') {
-    const tengoFC=countPais('FC','tengo'), pctFC=Math.round((tengoFC/20)*100);
-    html+='<div class="pais-section" id="sec-FC">';
-    html+='<div class="pais-header" onclick="togglePais(\'FC\')">';
-    html+='<div class="pais-header-left"><div style="font-size:24px;line-height:1;">&#x2B50;</div>';
-    html+='<div><div class="pais-name">Especiales / FC</div>';
-    html+='<div class="pais-prog-row"><div class="pais-prog-bar"><div class="pais-prog-fill" style="width:'+pctFC+'%"></div></div>';
-    html+='<div class="pais-prog-text">'+tengoFC+'/20</div></div></div></div>';
-    html+='<div class="pais-chevron" id="chev-FC">&#x25BC;</div></div>';
-    html+='<div class="pais-body" id="body-FC"><div class="fig-grid">';
-    for (let i=1;i<=20;i++) {
-      const key='FC_'+i, st=myAlbum[key]||'sin';
-      html+='<div class="fig'+(st==='sin'?'':' '+st)+'" onclick="toggleFig(\''+key+'\')">FC'+i+'</div>';
-    }
-    html+='</div></div></div>';
+  html += '</div></div></div>';
+  return html;
+}
+
+function buildFCHtml() {
+  const tengoFC = countPais('FC','tengo');
+  const pctFC = Math.round((tengoFC/20)*100);
+  const completoFC = tengoFC===20;
+  let html = '<div class="pais-section'+(completoFC?' pais-completo':'')+'" id="sec-FC">';
+  html += '<div class="pais-header" onclick="togglePais(\'FC\')">';
+  html += '<div class="pais-header-left">';
+  if (completoFC) html += '<div class="pais-star">&#x2B50;</div>';
+  html += '<div style="font-size:26px;line-height:1;">&#x2B50;</div>';
+  html += '<div><div class="pais-name">Especiales / FC</div>';
+  html += '<div class="pais-prog-row"><div class="pais-prog-bar"><div class="pais-prog-fill" style="width:'+pctFC+'%"></div></div>';
+  html += '<div class="pais-prog-text" style="'+(completoFC?'color:var(--verde-dark);font-weight:900;':'')+'">'+tengoFC+'/20'+(completoFC?' &#x2713;':'')+'</div>';
+  html += '</div></div></div>';
+  html += '<div class="pais-chevron" id="chev-FC">&#x25BC;</div></div>';
+  html += '<div class="pais-body" id="body-FC"><div class="fig-grid">';
+  for (let i=1;i<=20;i++) {
+    const key='FC_'+i, st=myAlbum[key]||'falta';
+    html += '<div class="fig'+(st==='sin'?'':' '+st)+'" onclick="toggleFig(\''+key+'\')"><div class="fig-num">FC'+i+'</div></div>';
   }
-  el.innerHTML=html;
+  html += '</div></div></div>';
+  return html;
 }
 
 function countPais(id,estado) {
@@ -558,74 +655,120 @@ window.togglePais = function(id) {
 };
 
 window.toggleFig = function(key) {
-  const cycle={sin:'tengo',tengo:'repetida',repetida:'falta',falta:'sin'};
-  const cur=myAlbum[key]||'sin', next=cycle[cur];
-  if (next==='sin') delete myAlbum[key]; else myAlbum[key]=next;
+  const cycle = {falta:'tengo',tengo:'repetida',repetida:'falta'};
+  const cur = myAlbum[key]||'falta';
+  const next = cycle[cur]||'falta';
+  myAlbum[key]=next;
   const parts=key.split('_'), paisId=parts[0]==='FC'?'FC':parts[0], num=parseInt(parts[parts.length-1]);
   const figs=document.querySelectorAll('#body-'+paisId+' .fig');
-  if (figs[num-1]) figs[num-1].className='fig'+(next==='sin'?'':' '+next);
+  if (figs[num-1]) figs[num-1].className='fig '+next;
   const tengo=countPais(paisId,'tengo'), pct=Math.round((tengo/20)*100);
-  const fill=document.querySelector('#sec-'+paisId+' .pais-prog-fill');
-  const txt=document.querySelector('#sec-'+paisId+' .pais-prog-text');
-  if (fill) fill.style.width=pct+'%';
-  if (txt) txt.textContent=tengo+'/20';
+  const completo=tengo===20;
+  const sec=document.getElementById('sec-'+paisId);
+  if (sec) {
+    sec.className='pais-section'+(completo?' pais-completo':'');
+    const fill=sec.querySelector('.pais-prog-fill');
+    const txt=sec.querySelector('.pais-prog-text');
+    const nameEl=sec.querySelector('.pais-name');
+    const chevEl=sec.querySelector('.pais-chevron');
+    if (fill) fill.style.width=pct+'%';
+    if (txt) { txt.textContent=tengo+'/20'+(completo?'  ✓':''); txt.style.color=completo?'var(--verde-dark)':''; txt.style.fontWeight=completo?'900':'700'; }
+    // star
+    const headerLeft=sec.querySelector('.pais-header-left');
+    const existingStar=headerLeft.querySelector('.pais-star');
+    if (completo && !existingStar) {
+      const star=document.createElement('div'); star.className='pais-star'; star.innerHTML='&#x2B50;';
+      headerLeft.insertBefore(star, headerLeft.firstChild);
+    } else if (!completo && existingStar) { existingStar.remove(); }
+  }
   renderStats();
   clearTimeout(saveTimeout);
   saveTimeout=setTimeout(async()=>{ try{await set(ref(db,'albums/'+currentUser.id),myAlbum);}catch(e){} },800);
 };
 
 // ===== CAMBIOS =====
+window.setCambiosFilter = function(f) {
+  cambiosFilter=f;
+  document.querySelectorAll('#cambios-chips .region-chip').forEach((c,i)=>{
+    c.classList.toggle('active',['todos','primaria','secundaria'][i]===f);
+  });
+  if (cambiosData) renderCambios(cambiosData);
+};
+
 async function loadCambios() {
   const el=document.getElementById('cambios-content');
   el.innerHTML='<div class="loading">Cargando companieros...</div>';
   try {
-    const [albumsSnap,usersSnap] = await Promise.all([get(ref(db,'albums')),get(ref(db,'users'))]);
+    const [albumsSnap,usersSnap]=await Promise.all([get(ref(db,'albums')),get(ref(db,'users'))]);
     if (!albumsSnap.exists()) { el.innerHTML='<div class="banner banner-info">Todavia no hay companieros registrados.</div>'; return; }
     const allAlbums=albumsSnap.val(), allUsers=usersSnap.exists()?usersSnap.val():{};
     const otros=Object.keys(allAlbums).filter(u=>u!==currentUser.id);
-    if (otros.length===0) { el.innerHTML='<div class="banner banner-info">Todavia no hay companieros. Compartiles el link para que se registren.</div>'; return; }
+    if (otros.length===0) { el.innerHTML='<div class="banner banner-info">Todavia no hay companieros aun.</div>'; return; }
     const misRep=new Set(Object.entries(myAlbum).filter(([,v])=>v==='repetida').map(([k])=>k));
     const misFalta=new Set(Object.entries(myAlbum).filter(([,v])=>v==='falta').map(([k])=>k));
+    // Agregar los sin marcar como falta
+    for (const p of PAISES) for(let i=1;i<=20;i++) { const k=p.id+'_'+i; if(!myAlbum[k]) misFalta.add(k); }
+    for(let i=1;i<=20;i++) { const k='FC_'+i; if(!myAlbum[k]) misFalta.add(k); }
+
+    let topUser=null, topFalta=Infinity;
     const scored=otros.map(uid=>{
       const uAlbum=allAlbums[uid]||{};
       const uRep=new Set(Object.entries(uAlbum).filter(([,v])=>v==='repetida').map(([k])=>k));
       const uFalta=new Set(Object.entries(uAlbum).filter(([,v])=>v==='falta').map(([k])=>k));
+      // agregar sin marcar del otro como falta
+      for(const p of PAISES) for(let i=1;i<=20;i++){const k=p.id+'_'+i;if(!uAlbum[k])uFalta.add(k);}
+      for(let i=1;i<=20;i++){const k='FC_'+i;if(!uAlbum[k])uFalta.add(k);}
       const yoDoy=[...misRep].filter(k=>uFalta.has(k));
       const elDa=[...uRep].filter(k=>misFalta.has(k));
       const scorePrincipal=Math.min(yoDoy.length,elDa.length);
-      return {uid,yoDoy,elDa,scorePrincipal,scoreSecundario:elDa.length,userData:allUsers[uid]||{apodo:uid,curso:''}};
+      const uData=allUsers[uid]||{apodo:uid,curso:''};
+      if (uFalta.size<topFalta){topFalta=uFalta.size;topUser={uid,apodo:uData.apodo,curso:uData.curso,falta:uFalta.size};}
+      return {uid,yoDoy,elDa,scorePrincipal,scoreSecundario:elDa.length,userData:uData};
     });
     scored.sort((a,b)=>b.scorePrincipal!==a.scorePrincipal?b.scorePrincipal-a.scorePrincipal:b.scoreSecundario-a.scoreSecundario);
-    const totalMatches=scored.filter(s=>s.scorePrincipal>0).length;
-    let html='';
-    if (totalMatches>0) html+='<div class="banner banner-ok">&#x1F389; '+totalMatches+' companieros con los que podes intercambiar!</div>';
-    else if (scored.some(s=>s.scoreSecundario>0)) html+='<div class="banner banner-warn">Sin matches directos todavia. Aca ves quien tiene figus que te faltan.</div>';
-    else html+='<div class="banner banner-info">Sin coincidencias aun. Segui marcando tus figus.</div>';
-    for (const s of scored) {
-      const {uid,yoDoy,elDa,scorePrincipal,scoreSecundario,userData}=s;
-      if (yoDoy.length===0&&elDa.length===0) continue;
-      html+='<div class="user-card"><div class="user-card-header"><div>';
-      html+='<div class="user-card-name">&#x1F464; '+userData.apodo+'</div>';
-      html+='<div class="user-card-sub">@'+uid+' &middot; Curso: '+userData.curso+'</div></div>';
-      if (scorePrincipal>0) { const c=Math.min(yoDoy.length,elDa.length); html+='<div class="match-badge">'+c+' match'+(c>1?'es':'')+'</div>'; }
-      else if (scoreSecundario>0) html+='<div class="match-badge-partial">Tiene '+scoreSecundario+' que te faltan</div>';
-      html+='</div><div class="user-card-body">';
-      if (yoDoy.length>0) {
-        html+='<div class="match-section-title">Vos le das (tus repetidas que le faltan):</div><div class="figs-chips">';
-        yoDoy.slice(0,20).forEach(k=>{html+='<span class="fchip fchip-doy">'+fmtKey(k)+'</span>';});
-        if (yoDoy.length>20) html+='<span class="fchip fchip-more">+' +(yoDoy.length-20)+'</span>';
-        html+='</div>';
-      }
-      if (elDa.length>0) {
-        html+='<div class="match-section-title">'+(scorePrincipal>0?'El te da (sus repetidas que te faltan):':'Tiene estas que te faltan:')+'</div><div class="figs-chips">';
-        elDa.slice(0,20).forEach(k=>{html+='<span class="fchip fchip-recibo">'+fmtKey(k)+'</span>';});
-        if (elDa.length>20) html+='<span class="fchip fchip-more">+'+(elDa.length-20)+'</span>';
-        html+='</div>';
-      }
-      html+='</div></div>';
+    cambiosData={scored,topUser};
+    renderCambios(cambiosData);
+  } catch(e){document.getElementById('cambios-content').innerHTML='<div class="banner" style="background:var(--rojo-light);color:var(--rojo)">Error: '+e.message+'</div>';}
+}
+
+function renderCambios({scored,topUser}) {
+  const el=document.getElementById('cambios-content');
+  let filtered=scored;
+  if (cambiosFilter==='primaria') filtered=scored.filter(s=>PRIMARIA.includes(s.userData.curso));
+  if (cambiosFilter==='secundaria') filtered=scored.filter(s=>SECUNDARIA.includes(s.userData.curso));
+  const totalMatches=filtered.filter(s=>s.scorePrincipal>0).length;
+  let html='';
+  if (topUser) {
+    html+='<div class="banner" style="background:#fef9c3;border:2px solid #eab308;color:#713f12;">';
+    html+='&#x1F3C6; <strong>Mas cerca de completar:</strong> '+topUser.apodo+' ('+topUser.curso+') con <strong>'+topUser.falta+' figus faltantes</strong></div>';
+  }
+  if (totalMatches>0) html+='<div class="banner banner-ok">&#x1F389; '+totalMatches+' companieros con los que podes intercambiar!</div>';
+  else if (filtered.some(s=>s.scoreSecundario>0)) html+='<div class="banner banner-warn">Sin matches directos todavia. Aca ves quien tiene figus que te faltan.</div>';
+  else html+='<div class="banner banner-info">Sin coincidencias en esta categoria.</div>';
+  for (const s of filtered) {
+    const {uid,yoDoy,elDa,scorePrincipal,scoreSecundario,userData}=s;
+    if (yoDoy.length===0&&elDa.length===0) continue;
+    html+='<div class="user-card"><div class="user-card-header"><div>';
+    html+='<div class="user-card-name">&#x1F464; '+userData.apodo+'</div>';
+    html+='<div class="user-card-sub">@'+uid+' &middot; Curso: '+userData.curso+'</div></div>';
+    if (scorePrincipal>0){const c=Math.min(yoDoy.length,elDa.length);html+='<div class="match-badge">'+c+' match'+(c>1?'es':'')+'</div>';}
+    else if (scoreSecundario>0) html+='<div class="match-badge-partial">Tiene '+scoreSecundario+' que te faltan</div>';
+    html+='</div><div class="user-card-body">';
+    if (yoDoy.length>0){
+      html+='<div class="match-section-title">Vos le das:</div><div class="figs-chips">';
+      yoDoy.slice(0,20).forEach(k=>{html+='<span class="fchip fchip-doy">'+fmtKey(k)+'</span>';});
+      if(yoDoy.length>20)html+='<span class="fchip fchip-more">+'+(yoDoy.length-20)+'</span>';
+      html+='</div>';
     }
-    el.innerHTML=html;
-  } catch(e) { el.innerHTML='<div class="banner" style="background:var(--rojo-light);color:var(--rojo)">Error: '+e.message+'</div>'; }
+    if (elDa.length>0){
+      html+='<div class="match-section-title">'+(scorePrincipal>0?'El te da:':'Tiene estas que te faltan:')+'</div><div class="figs-chips">';
+      elDa.slice(0,20).forEach(k=>{html+='<span class="fchip fchip-recibo">'+fmtKey(k)+'</span>';});
+      if(elDa.length>20)html+='<span class="fchip fchip-more">+'+(elDa.length-20)+'</span>';
+      html+='</div>';
+    }
+    html+='</div></div>';
+  }
+  el.innerHTML=html;
 }
 
 function fmtKey(key) {
@@ -633,9 +776,74 @@ function fmtKey(key) {
   const p=key.split('_'); return p[0]+' '+p[1];
 }
 
-// ===== TIENDA =====
-function initShop() {
+// ===== COMPRAR =====
+async function renderComprar() {
+  const el=document.getElementById('comprar-content');
+  // Refresh tienda status
+  try {
+    const snap=await get(child(ref(db),'config/tienda_activa'));
+    tiendaActiva=snap.exists()?snap.val():false;
+  } catch(e){}
+  if (!tiendaActiva) {
+    el.innerHTML='<div class="shop-paused"><span>&#x23F8;&#xFE0F;</span><p>Las compras estan pausadas por el momento.</p><p style="margin-top:8px;font-size:14px;">Volve a intentarlo mas tarde.</p></div>';
+    return;
+  }
   cantPaquetes=MIN_PAQUETES;
+  // Load especiales
+  let especialesHtml='';
+  try {
+    const snap=await get(child(ref(db),'especiales'));
+    if (snap.exists()) {
+      const items=snap.val();
+      especialesHtml='<div class="shop-card"><h3>&#x2B50; Figuritas Especiales</h3><div class="especiales-grid">';
+      for (const [id,item] of Object.entries(items)) {
+        especialesHtml+='<div class="especial-card">';
+        if (item.img) especialesHtml+='<img class="especial-img" src="'+item.img+'" alt="'+item.nombre+'" onerror="this.style.display=\'none\'">';
+        else especialesHtml+='<div class="especial-img-placeholder">&#x2B50;</div>';
+        especialesHtml+='<div class="especial-info"><div class="especial-name">'+item.nombre+'</div>';
+        especialesHtml+='<div class="especial-price">$'+Number(item.precio).toLocaleString('es-AR')+'</div>';
+        especialesHtml+='<button class="btn-especial" onclick="pedirEspecial(\''+item.nombre+'\','+item.precio+')">Pedir por WhatsApp</button></div></div>';
+      }
+      especialesHtml+='</div></div>';
+    }
+  } catch(e){}
+
+  el.innerHTML=`
+    <div class="shop-hero">
+      <h2>&#x1F4E6; Comprar Paquetes</h2>
+      <p>Apoya FigusMatch y completa tu album</p>
+    </div>
+    <div class="shop-card">
+      <h3>&#x1F4CA; Cantidad de paquetes</h3>
+      <div class="min-badge">&#x26A0; Minimo ${MIN_PAQUETES} paquetes</div>
+      <div class="qty-control">
+        <button class="qty-btn" id="btn-menos" onclick="cambiarCantidad(-1)" disabled>-</button>
+        <div class="qty-display">
+          <div class="qty-num" id="qty-num">${MIN_PAQUETES}</div>
+          <div class="qty-label">paquetes</div>
+        </div>
+        <button class="qty-btn" onclick="cambiarCantidad(1)">+</button>
+      </div>
+      <div class="shop-detail" id="shop-detail"></div>
+      <div class="alias-box">
+        <div>
+          <div class="alias-label">Alias Mercado Pago</div>
+          <div class="alias-value">${ALIAS_MP}</div>
+        </div>
+        <button class="copy-btn" onclick="copyAlias()">Copiar</button>
+      </div>
+      <button class="btn btn-whatsapp" onclick="pedirPorWhatsApp()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Pedir por WhatsApp
+      </button>
+      <p style="text-align:center;font-size:13px;color:var(--text-sec);margin-top:10px;font-weight:600;">Te vamos a contactar para coordinar la entrega</p>
+      <div style="margin-top:18px;padding:16px;background:var(--gris-light);border-radius:var(--radius-sm);font-size:13px;color:var(--text-sec);line-height:1.6;">
+        <p style="font-weight:800;margin-bottom:6px;">&#x1F4AC; FigusMatch es gratuita y sin fines de lucro.</p>
+        <p>Esta app facilita el intercambio de figuritas entre usuarios. No nos responsabilizamos por el valor que cada usuario le asigne a sus figuritas.</p>
+        <p style="margin-top:8px;font-weight:800;color:var(--verde-dark);">&#x1F64C; Comprar paquetes es la mejor forma de apoyar que la app siga funcionando. Gracias!</p>
+      </div>
+    </div>
+    ${especialesHtml}`;
   updateShopUI();
 }
 
@@ -643,44 +851,35 @@ window.cambiarCantidad = function(delta) {
   const nueva=cantPaquetes+delta;
   if (nueva<MIN_PAQUETES) return;
   cantPaquetes=nueva;
+  document.getElementById('btn-menos').disabled=cantPaquetes<=MIN_PAQUETES;
+  document.getElementById('qty-num').textContent=cantPaquetes;
   updateShopUI();
 };
 
 function updateShopUI() {
-  document.getElementById('qty-num').textContent=cantPaquetes;
-  document.getElementById('btn-menos').disabled=cantPaquetes<=MIN_PAQUETES;
-  const figus=cantPaquetes*5;
   const total=cantPaquetes*precioPaquete;
   document.getElementById('shop-detail').innerHTML=
     '<div class="shop-detail-row"><span>Paquetes</span><span>'+cantPaquetes+'</span></div>'+
-    
     '<div class="shop-detail-row"><span>Precio por paquete</span><span>$'+precioPaquete.toLocaleString('es-AR')+'</span></div>'+
-    '<div class="shop-detail-row"><span>Total a pagar</span><span style="color:var(--verde-dark);font-size:17px;">$'+total.toLocaleString('es-AR')+'</span></div>';
-  document.getElementById('alias-display').textContent=ALIAS_MP;
+    '<div class="shop-detail-row"><span>Total a pagar</span><span style="color:var(--verde-dark);font-size:18px;">$'+total.toLocaleString('es-AR')+'</span></div>';
 }
+
+window.pedirPorWhatsApp = function() {
+  const total=cantPaquetes*precioPaquete;
+  const msg='Hola! Quiero comprar figus del Mundial 2026!\n\n'+'Usuario: '+currentUser.id+'\nNombre: '+currentUser.apodo+'\nCurso: '+currentUser.curso+'\n\nPaquetes: '+cantPaquetes+'\nTotal: $'+total.toLocaleString('es-AR')+'\n\nAlias MP: '+ALIAS_MP;
+  window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(msg),'_blank');
+};
+
+window.pedirEspecial = function(nombre, precio) {
+  const msg='Hola! Quiero comprar la figurita especial:\n\nFigurita: '+nombre+'\nPrecio: $'+Number(precio).toLocaleString('es-AR')+'\n\nUsuario: '+currentUser.id+'\nNombre: '+currentUser.apodo+'\nCurso: '+currentUser.curso+'\n\nAlias MP: '+ALIAS_MP;
+  window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(msg),'_blank');
+};
 
 window.copyAlias = function() {
   navigator.clipboard.writeText(ALIAS_MP).then(()=>{
     const btn=document.querySelector('.copy-btn');
-    btn.textContent='Copiado!'; btn.style.background='var(--verde-dark)';
-    setTimeout(()=>{btn.textContent='Copiar';btn.style.background='';},2000);
+    if(btn){btn.textContent='Copiado!';btn.style.background='var(--verde-dark)';setTimeout(()=>{btn.textContent='Copiar';btn.style.background='';},2000);}
   });
-};
-
-window.pedirPorWhatsApp = function() {
-  const figus=cantPaquetes*5;
-  const total=cantPaquetes*precioPaquete;
-  const msg=
-    'Hola! Quiero comprar figus del Mundial 2026 🙌\n\n'+
-    '👤 Usuario: '+currentUser.id+'\n'+
-    '📛 Nombre: '+currentUser.apodo+'\n'+
-    '🏫 Curso: '+currentUser.curso+'\n\n'+
-    '📦 Paquetes: '+cantPaquetes+'\n'+
-    '🃏 Figuritas: '+figus+'\n'+
-    '💰 Total: $'+total.toLocaleString('es-AR')+'\n\n'+
-    '💳 Alias MP: '+ALIAS_MP;
-  const url='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(msg);
-  window.open(url,'_blank');
 };
 
 // ===== ADMIN =====
@@ -694,25 +893,62 @@ window.showAdminLogin = function() {
 
 async function loadAdminData() {
   try {
-    const snap=await get(child(ref(db),'config/precio'));
-    const precio=snap.exists()?snap.val():2200;
+    const [precioSnap,tiendaSnap]=await Promise.all([
+      get(child(ref(db),'config/precio')),
+      get(child(ref(db),'config/tienda_activa'))
+    ]);
+    const precio=precioSnap.exists()?precioSnap.val():2200;
     precioPaquete=precio;
     document.getElementById('admin-precio').value=precio;
     document.getElementById('precio-actual').textContent='$'+Number(precio).toLocaleString('es-AR')+' por paquete';
-  } catch(e) {}
+    const activa=tiendaSnap.exists()?tiendaSnap.val():false;
+    tiendaActiva=activa;
+    document.getElementById('toggle-tienda').checked=activa;
+  } catch(e){}
+
+  // Especiales
+  try {
+    const snap=await get(child(ref(db),'especiales'));
+    const el=document.getElementById('admin-especiales-list');
+    if (snap.exists()) {
+      const items=snap.val(); let html='';
+      for (const [id,item] of Object.entries(items)) {
+        html+='<div class="especial-admin-card">';
+        if(item.img) html+='<img class="especial-admin-thumb" src="'+item.img+'" onerror="this.style.display=\'none\'">';
+        html+='<div class="especial-admin-info"><div class="especial-admin-name">'+item.nombre+'</div>';
+        html+='<div class="especial-admin-price">$'+Number(item.precio).toLocaleString('es-AR')+'</div></div>';
+        html+='<button class="btn btn-danger btn-sm" onclick="deleteEspecial(\''+id+'\')">Borrar</button></div>';
+      }
+      el.innerHTML=html;
+    } else { el.innerHTML='<p style="font-size:13px;color:var(--text-sec);">Sin figuritas especiales cargadas.</p>'; }
+  } catch(e){}
+
+  // Usuarios
   try {
     const snap=await get(child(ref(db),'users'));
     const el=document.getElementById('admin-users-list');
     if (!snap.exists()) { el.innerHTML='<p style="color:var(--text-sec);font-size:13px;">Sin usuarios aun</p>'; return; }
     const users=snap.val(); let html='';
     for (const [uid,data] of Object.entries(users)) {
-      html+='<div class="user-row"><div><div class="user-row-name">@'+uid+' - '+data.apodo+'</div>';
+      html+='<div class="user-row"><div><div class="user-row-name">@'+uid+' — '+data.apodo+'</div>';
       html+='<div class="user-row-detail"><span class="badge badge-curso">'+data.curso+'</span></div></div>';
-      html+='<button class="btn btn-danger btn-sm" onclick="openReset(\''+uid+'\')">Reset</button></div>';
+      html+='<div style="display:flex;gap:6px;">';
+      html+='<button class="btn btn-danger btn-sm" onclick="openReset(\''+uid+'\')">Reset</button>';
+      html+='<button class="btn btn-sm" style="background:#fee2e2;color:#7f1d1d;border:1.5px solid #dc2626;" onclick="confirmDelete(\''+uid+'\')">Eliminar</button>';
+      html+='</div></div>';
     }
     el.innerHTML=html;
-  } catch(e) { document.getElementById('admin-users-list').innerHTML='<p style="color:var(--rojo)">Error: '+e.message+'</p>'; }
+  } catch(e){ document.getElementById('admin-users-list').innerHTML='<p style="color:var(--rojo)">Error: '+e.message+'</p>'; }
 }
+
+window.saveToggleTienda = async function() {
+  const activa=document.getElementById('toggle-tienda').checked;
+  try {
+    await set(ref(db,'config/tienda_activa'),activa);
+    tiendaActiva=activa;
+    showMsg('admin-msg',activa?'Tienda activada':'Tienda desactivada','ok');
+  } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
+};
 
 window.savePrecio = async function() {
   const precio=document.getElementById('admin-precio').value;
@@ -722,7 +958,32 @@ window.savePrecio = async function() {
     precioPaquete=Number(precio);
     document.getElementById('precio-actual').textContent='$'+Number(precio).toLocaleString('es-AR')+' por paquete';
     showMsg('admin-msg','Precio actualizado','ok');
-  } catch(e) { showMsg('admin-msg','Error: '+e.message,'err'); }
+  } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
+};
+
+window.addEspecial = async function() {
+  const nombre=document.getElementById('esp-nombre').value.trim();
+  const precio=document.getElementById('esp-precio').value;
+  const img=document.getElementById('esp-img').value.trim();
+  if (!nombre||!precio) return showMsg('admin-msg','Completa nombre y precio','err');
+  try {
+    const id='esp_'+Date.now();
+    await set(ref(db,'especiales/'+id),{nombre,precio:Number(precio),img:img||''});
+    document.getElementById('esp-nombre').value='';
+    document.getElementById('esp-precio').value='';
+    document.getElementById('esp-img').value='';
+    showMsg('admin-msg','Figurita especial agregada','ok');
+    loadAdminData();
+  } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
+};
+
+window.deleteEspecial = async function(id) {
+  if (!confirm('Eliminar esta figurita especial?')) return;
+  try {
+    await set(ref(db,'especiales/'+id),null);
+    showMsg('admin-msg','Figurita eliminada','ok');
+    loadAdminData();
+  } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
 };
 
 window.openReset = function(uid) {
@@ -744,12 +1005,26 @@ window.confirmReset = async function() {
     await update(ref(db,'users/'+resetTarget),{pass:btoa(newpass)});
     showMsg('reset-msg','Contrasena reseteada','ok');
     setTimeout(closeModal,1200); loadAdminData();
-  } catch(e) { showMsg('reset-msg','Error: '+e.message,'err'); }
+  } catch(e){ showMsg('reset-msg','Error: '+e.message,'err'); }
+};
+
+window.confirmDelete = async function(uid) {
+  if (!confirm('Eliminar usuario @'+uid+' y todo su album? Esta accion no se puede deshacer.')) return;
+  try {
+    await set(ref(db,'users/'+uid),null);
+    await set(ref(db,'albums/'+uid),null);
+    showMsg('admin-msg','Usuario @'+uid+' eliminado','ok');
+    loadAdminData();
+  } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
 };
 
 function showMsg(id,text,type) {
   document.getElementById(id).innerHTML='<div class="msg msg-'+type+'">'+text+'</div>';
 }
+</script>
+<script>
+const savedUser=localStorage.getItem('figus_user');
+if(savedUser) document.getElementById('login-user').value=savedUser;
 </script>
 </body>
 </html>
