@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FigusMatch</title>
+<link rel="manifest" href="data:application/json,{%22name%22:%22FigusMatch%22,%22short_name%22:%22FigusMatch%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23f0fdf4%22,%22theme_color%22:%22%2316a34a%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2316a34a'/><text y='75' font-size='70' text-anchor='middle' x='50'>⚽</text></svg>%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+<meta name="theme-color" content="#16a34a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FigusMatch">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2316a34a'/><text y='75' font-size='70' text-anchor='middle' x='50'>⚽</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -227,8 +233,8 @@ input:checked + .toggle-slider:before { transform: translateX(24px); }
       <p>Mundial 2026</p>
     </div>
     <div id="login-msg"></div>
-    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="tu usuario" autocomplete="off" autocapitalize="none"/></div>
-    <div class="field"><label>Contrasena</label><input type="password" id="login-pass" placeholder="......"/></div>
+    <div class="field"><label>Usuario</label><input type="text" id="login-user" placeholder="tu usuario" autocomplete="username" autocapitalize="none"/></div>
+    <div class="field"><label>Contrasena</label><input type="password" id="login-pass" placeholder="......" autocomplete="current-password"/></div>
     <button class="btn btn-primary" onclick="doLogin()">Ingresar</button>
     <button class="btn btn-ghost" onclick="showScreen('screen-register')">Registrarse</button>
     <button class="link-btn" onclick="showAdminLogin()">Panel administrador</button>
@@ -321,7 +327,11 @@ input:checked + .toggle-slider:before { transform: translateX(24px); }
         <span class="toggle-label">Compra de paquetes</span>
         <label class="toggle"><input type="checkbox" id="toggle-tienda" onchange="saveToggleTienda()"/><span class="toggle-slider"></span></label>
       </div>
-      <p style="font-size:13px;color:var(--text-sec);margin-top:6px;">Cuando esta desactivado, los usuarios ven la tienda pausada.</p>
+      <div class="toggle-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--gris-border);">
+        <span class="toggle-label">Figuritas especiales</span>
+        <label class="toggle"><input type="checkbox" id="toggle-especiales" onchange="saveToggleEspeciales()"/><span class="toggle-slider"></span></label>
+      </div>
+      <p style="font-size:13px;color:var(--text-sec);margin-top:8px;">Podes activar/desactivar cada seccion por separado.</p>
     </div>
 
     <!-- Precio -->
@@ -345,6 +355,12 @@ input:checked + .toggle-slider:before { transform: translateX(24px); }
         <input type="text" id="esp-img" placeholder="URL de la imagen"/>
         <button class="btn btn-primary btn-sm" style="width:100%;margin-top:4px;" onclick="addEspecial()">Agregar</button>
       </div>
+    </div>
+
+    <!-- Estadisticas -->
+    <div class="admin-section">
+      <h2>&#x1F4CA; Estadisticas de Figuritas</h2>
+      <div id="admin-stats-content"><button class="btn btn-ghost btn-sm" style="width:100%;" onclick="loadStats()">Ver estadisticas</button></div>
     </div>
 
     <!-- Usuarios -->
@@ -465,7 +481,7 @@ const PAISES = [
 const REGIONES = ["Todos","CONMEBOL","CONCACAF","UEFA","AFC","CAF","OFC"];
 
 function flagImg(cc) {
-  return '<img src="https://flagcdn.com/w40/'+cc+'.png" onerror="this.style.display=\'none\'" alt="">';
+  return '<img src="https://flagcdn.com/w40/'+cc+'.png" onerror="hideImg(this)" alt="">';
 }
 
 // ===== SCREENS =====
@@ -697,13 +713,13 @@ window.setCambiosFilter = function(f) {
 
 async function loadCambios() {
   const el=document.getElementById('cambios-content');
-  el.innerHTML='<div class="loading">Cargando companieros...</div>';
+  el.innerHTML='<div class="loading">Cargando compañeros...</div>';
   try {
     const [albumsSnap,usersSnap]=await Promise.all([get(ref(db,'albums')),get(ref(db,'users'))]);
-    if (!albumsSnap.exists()) { el.innerHTML='<div class="banner banner-info">Todavia no hay companieros registrados.</div>'; return; }
+    if (!albumsSnap.exists()) { el.innerHTML='<div class="banner banner-info">Todavia no hay compañeros registrados.</div>'; return; }
     const allAlbums=albumsSnap.val(), allUsers=usersSnap.exists()?usersSnap.val():{};
     const otros=Object.keys(allAlbums).filter(u=>u!==currentUser.id);
-    if (otros.length===0) { el.innerHTML='<div class="banner banner-info">Todavia no hay companieros aun.</div>'; return; }
+    if (otros.length===0) { el.innerHTML='<div class="banner banner-info">Todavia no hay compañeros aun.</div>'; return; }
     const misRep=new Set(Object.entries(myAlbum).filter(([,v])=>v==='repetida').map(([k])=>k));
     const misFalta=new Set(Object.entries(myAlbum).filter(([,v])=>v==='falta').map(([k])=>k));
     // Agregar los sin marcar como falta
@@ -742,7 +758,7 @@ function renderCambios({scored,topUser}) {
     html+='<div class="banner" style="background:#fef9c3;border:2px solid #eab308;color:#713f12;">';
     html+='&#x1F3C6; <strong>Mas cerca de completar:</strong> '+topUser.apodo+' ('+topUser.curso+') con <strong>'+topUser.falta+' figus faltantes</strong></div>';
   }
-  if (totalMatches>0) html+='<div class="banner banner-ok">&#x1F389; '+totalMatches+' companieros con los que podes intercambiar!</div>';
+  if (totalMatches>0) html+='<div class="banner banner-ok">&#x1F389; '+totalMatches+' compañeros con los que podes intercambiar!</div>';
   else if (filtered.some(s=>s.scoreSecundario>0)) html+='<div class="banner banner-warn">Sin matches directos todavia. Aca ves quien tiene figus que te faltan.</div>';
   else html+='<div class="banner banner-info">Sin coincidencias en esta categoria.</div>';
   for (const s of filtered) {
@@ -778,38 +794,32 @@ function fmtKey(key) {
 
 // ===== COMPRAR =====
 async function renderComprar() {
-  const el=document.getElementById('comprar-content');
-  // Refresh tienda status
+  const el = document.getElementById('comprar-content');
+  el.innerHTML = '<div class="loading">Cargando tienda...</div>';
+  cantPaquetes = MIN_PAQUETES;
+
+  // Load all config at once
+  let tiendaOn = false, especialesOn = false;
   try {
-    const snap=await get(child(ref(db),'config/tienda_activa'));
-    tiendaActiva=snap.exists()?snap.val():false;
-  } catch(e){}
-  if (!tiendaActiva) {
-    el.innerHTML='<div class="shop-paused"><span>&#x23F8;&#xFE0F;</span><p>Las compras estan pausadas por el momento.</p><p style="margin-top:8px;font-size:14px;">Volve a intentarlo mas tarde.</p></div>';
+    const [ts, es] = await Promise.all([
+      get(child(ref(db), 'config/tienda_activa')),
+      get(child(ref(db), 'config/especiales_activas'))
+    ]);
+    tiendaOn = ts.exists() ? ts.val() : false;
+    especialesOn = es.exists() ? es.val() : false;
+    tiendaActiva = tiendaOn;
+  } catch(e) {}
+
+  // If both off, show paused
+  if (!tiendaOn && !especialesOn) {
+    el.innerHTML = '<div class="shop-paused"><span style="font-size:48px;display:block;margin-bottom:14px;">&#x23F8;&#xFE0F;</span><p style="font-size:16px;font-weight:700;color:var(--text-sec);">Las compras estan pausadas por el momento.</p></div>';
     return;
   }
-  cantPaquetes=MIN_PAQUETES;
-  // Load especiales
-  let especialesHtml='';
-  try {
-    const snap=await get(child(ref(db),'especiales'));
-    if (snap.exists()) {
-      const items=snap.val();
-      especialesHtml='<div class="shop-card"><h3>&#x2B50; Figuritas Especiales</h3><div class="especiales-grid">';
-      for (const [id,item] of Object.entries(items)) {
-        especialesHtml+='<div class="especial-card">';
-        if (item.img) especialesHtml+='<img class="especial-img" src="'+item.img+'" alt="'+item.nombre+'" onerror="this.style.display=\'none\'">';
-        else especialesHtml+='<div class="especial-img-placeholder">&#x2B50;</div>';
-        especialesHtml+='<div class="especial-info"><div class="especial-name">'+item.nombre+'</div>';
-        especialesHtml+='<div class="especial-price">$'+Number(item.precio).toLocaleString('es-AR')+'</div>';
-        especialesHtml+='<button class="btn-especial" onclick="pedirEspecial(\''+item.nombre+'\','+item.precio+')">Pedir por WhatsApp</button></div></div>';
-      }
-      especialesHtml+='</div></div>';
-    }
-  } catch(e){}
 
-  el.innerHTML=`
-    <div class="shop-hero">
+  // Build paquetes section
+  let html = '';
+  if (tiendaOn) {
+    html += `<div class="shop-hero">
       <h2>&#x1F4E6; Comprar Paquetes</h2>
       <p>Apoya FigusMatch y completa tu album</p>
     </div>
@@ -839,12 +849,39 @@ async function renderComprar() {
       <p style="text-align:center;font-size:13px;color:var(--text-sec);margin-top:10px;font-weight:600;">Te vamos a contactar para coordinar la entrega</p>
       <div style="margin-top:18px;padding:16px;background:var(--gris-light);border-radius:var(--radius-sm);font-size:13px;color:var(--text-sec);line-height:1.6;">
         <p style="font-weight:800;margin-bottom:6px;">&#x1F4AC; FigusMatch es gratuita y sin fines de lucro.</p>
-        <p>Esta app facilita el intercambio de figuritas entre usuarios. No nos responsabilizamos por el valor que cada usuario le asigne a sus figuritas.</p>
+        <p>Esta app facilita el intercambio de figuritas. No nos responsabilizamos por el valor que cada usuario le asigne a sus figuritas.</p>
         <p style="margin-top:8px;font-weight:800;color:var(--verde-dark);">&#x1F64C; Comprar paquetes es la mejor forma de apoyar que la app siga funcionando. Gracias!</p>
       </div>
-    </div>
-    ${especialesHtml}`;
-  updateShopUI();
+    </div>`;
+  } else {
+    html += '<div style="background:#fff;border-radius:16px;padding:20px;text-align:center;box-shadow:var(--shadow);margin-bottom:16px;"><span style="font-size:36px;">&#x23F8;&#xFE0F;</span><p style="margin-top:10px;font-size:15px;font-weight:700;color:var(--text-sec);">Compra de paquetes pausada.</p></div>';
+  }
+
+  // Build especiales section
+  if (especialesOn) {
+    try {
+      const snap = await get(child(ref(db), 'especiales'));
+      if (snap.exists()) {
+        const items = snap.val();
+        html += '<div class="shop-card"><h3>&#x2B50; Figuritas Especiales</h3><div class="especiales-grid">';
+        for (const [id, item] of Object.entries(items)) {
+          html += '<div class="especial-card">';
+          if (item.img) html += '<img class="especial-img" src="'+item.img+'" alt="'+item.nombre+'" onerror="hideImg(this)">';
+          else html += '<div class="especial-img-placeholder">&#x2B50;</div>';
+          html += '<div class="especial-info"><div class="especial-name">'+item.nombre+'</div>';
+          html += '<div class="especial-price">$'+Number(item.precio).toLocaleString('es-AR')+'</div>';
+          const safeNombre = String(item.nombre).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          html += '<button class="btn-especial" onclick="pedirEspecial(\'' + safeNombre + '\', ' + Number(item.precio) + ')">Pedir por WhatsApp</button></div></div>';
+        }
+        html += '</div></div>';
+      } else {
+        html += '<div class="shop-card"><h3>&#x2B50; Figuritas Especiales</h3><p style="font-size:13px;color:var(--text-sec);">No hay figuritas especiales disponibles por el momento.</p></div>';
+      }
+    } catch(e) {}
+  }
+
+  el.innerHTML = html;
+  if (tiendaOn) updateShopUI();
 }
 
 window.cambiarCantidad = function(delta) {
@@ -893,9 +930,10 @@ window.showAdminLogin = function() {
 
 async function loadAdminData() {
   try {
-    const [precioSnap,tiendaSnap]=await Promise.all([
+    const [precioSnap,tiendaSnap,espSnap]=await Promise.all([
       get(child(ref(db),'config/precio')),
-      get(child(ref(db),'config/tienda_activa'))
+      get(child(ref(db),'config/tienda_activa')),
+      get(child(ref(db),'config/especiales_activas'))
     ]);
     const precio=precioSnap.exists()?precioSnap.val():2200;
     precioPaquete=precio;
@@ -904,6 +942,7 @@ async function loadAdminData() {
     const activa=tiendaSnap.exists()?tiendaSnap.val():false;
     tiendaActiva=activa;
     document.getElementById('toggle-tienda').checked=activa;
+    document.getElementById('toggle-especiales').checked=espSnap.exists()?espSnap.val():false;
   } catch(e){}
 
   // Especiales
@@ -914,7 +953,7 @@ async function loadAdminData() {
       const items=snap.val(); let html='';
       for (const [id,item] of Object.entries(items)) {
         html+='<div class="especial-admin-card">';
-        if(item.img) html+='<img class="especial-admin-thumb" src="'+item.img+'" onerror="this.style.display=\'none\'">';
+        if(item.img) html+='<img class="especial-admin-thumb" src="'+item.img+'" onerror="hideImg(this)">';
         html+='<div class="especial-admin-info"><div class="especial-admin-name">'+item.nombre+'</div>';
         html+='<div class="especial-admin-price">$'+Number(item.precio).toLocaleString('es-AR')+'</div></div>';
         html+='<button class="btn btn-danger btn-sm" onclick="deleteEspecial(\''+id+'\')">Borrar</button></div>';
@@ -946,8 +985,68 @@ window.saveToggleTienda = async function() {
   try {
     await set(ref(db,'config/tienda_activa'),activa);
     tiendaActiva=activa;
-    showMsg('admin-msg',activa?'Tienda activada':'Tienda desactivada','ok');
+    showMsg('admin-msg',activa?'Paquetes activados':'Paquetes desactivados','ok');
   } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
+};
+
+window.saveToggleEspeciales = async function() {
+  const activa=document.getElementById('toggle-especiales').checked;
+  try {
+    await set(ref(db,'config/especiales_activas'),activa);
+    showMsg('admin-msg',activa?'Especiales activadas':'Especiales desactivadas','ok');
+  } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
+};
+
+window.loadStats = async function() {
+  const el=document.getElementById('admin-stats-content');
+  el.innerHTML='<div class="loading">Analizando figuritas...</div>';
+  try {
+    const snap=await get(ref(db,'albums'));
+    if (!snap.exists()) { el.innerHTML='<p style="color:var(--text-sec);font-size:13px;">Sin datos todavia.</p>'; return; }
+    const allAlbums=snap.val();
+    const usuarios=Object.values(allAlbums);
+    const totalUsers=usuarios.length;
+    if (totalUsers===0) { el.innerHTML='<p style="color:var(--text-sec);">Sin usuarios con album.</p>'; return; }
+
+    // Count how many users have each fig as 'falta' (hard to sell = many need it but few have it repeated)
+    const faltaCount={}, repCount={};
+    const PAIS_IDS = ["MEX","USA","CAN","HAI","PAN","CUW","ARG","BRA","COL","URU","ECU","PAR","ENG","FRA","ESP","ALE","POR","NED","BEL","CRO","NOR","SCO","AUT","SUI","SWE","TUR","CZE","BIH","JPN","IRN","KOR","AUS","UZB","JOR","SAU","QAT","IRQ","MAR","TUN","ALG","EGY","GHA","CPV","SEN","CIV","RSA","COD","NZL"];
+    for (const pid of PAIS_IDS) for(let i=1;i<=20;i++) { faltaCount[pid+"_"+i]=0; repCount[pid+"_"+i]=0; }
+    for(let i=1;i<=20;i++) { faltaCount["FC_"+i]=0; repCount["FC_"+i]=0; }
+
+    for (const album of usuarios) {
+      for (const [key,val] of Object.entries(album)) {
+        if (val==='falta' && faltaCount[key]!==undefined) faltaCount[key]++;
+        if (val==='repetida' && repCount[key]!==undefined) repCount[key]++;
+        // count unset as falta
+      }
+      // unset = falta implicitly
+      for (const key of Object.keys(faltaCount)) {
+        if (!album[key]) faltaCount[key]++;
+      }
+    }
+
+    // Most needed (high falta, low rep) = hard to get
+    const scored=Object.keys(faltaCount).map(k=>({
+      key:k, falta:faltaCount[k], rep:repCount[k]||0,
+      score: faltaCount[k] - (repCount[k]||0)*2
+    }));
+    scored.sort((a,b)=>b.score-a.score);
+    const hardest=scored.slice(0,10);
+    const easiest=[...scored].sort((a,b)=>a.score-b.score).slice(0,10);
+
+    let html='<div style="margin-bottom:16px;">';
+    html+='<div style="font-size:13px;font-weight:800;color:var(--rojo);margin-bottom:8px;">🔴 Las 10 más difíciles de conseguir (más demanda, menos oferta):</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">';
+    hardest.forEach(f=>{ html+='<div style="background:#fee2e2;color:#7f1d1d;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:800;">'+f.key.replace('_',' ')+'<span style="font-size:10px;opacity:.7;margin-left:4px;">'+f.falta+' la necesitan</span></div>'; });
+    html+='</div>';
+    html+='<div style="font-size:13px;font-weight:800;color:var(--verde-dark);margin-bottom:8px;">🟢 Las 10 más fáciles de conseguir (más repetidas disponibles):</div>';
+    html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+    easiest.forEach(f=>{ html+='<div style="background:#dcfce7;color:#14532d;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:800;">'+f.key.replace('_',' ')+'<span style="font-size:10px;opacity:.7;margin-left:4px;">'+f.rep+' repetidas</span></div>'; });
+    html+='</div></div>';
+    html+='<button class="btn btn-ghost btn-sm" style="width:100%;" onclick="loadStats()">Actualizar</button>';
+    el.innerHTML=html;
+  } catch(e){ el.innerHTML='<p style="color:var(--rojo);">Error: '+e.message+'</p>'; }
 };
 
 window.savePrecio = async function() {
@@ -1018,6 +1117,7 @@ window.confirmDelete = async function(uid) {
   } catch(e){ showMsg('admin-msg','Error: '+e.message,'err'); }
 };
 
+window.hideImg = function(el){el.style.display="none";};
 function showMsg(id,text,type) {
   document.getElementById(id).innerHTML='<div class="msg msg-'+type+'">'+text+'</div>';
 }
