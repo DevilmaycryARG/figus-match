@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>FigusMatch - Como funciona</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --verde: #16a34a;
+  --verde-dark: #14532d;
+  --verde-light: #dcfce7;
+  --amarillo: #eab308;
+  --rojo: #dc2626;
+  --azul: #2563eb;
+  --white: #fff;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #0a0a0a;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* SLIDES CONTAINER */
+.slides {
+  width: 100vw;
+  max-width: 420px;
+  height: 100vh;
+  max-height: 780px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+@media (min-width: 420px) {
+  .slides {
+    border-radius: 24px;
+    box-shadow: 0 0 80px rgba(0,0,0,.8);
+  }
+}
+
+/* PROGRESS BARS */
+.progress-bars {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  gap: 4px;
+  padding: 12px 12px 0;
+  z-index: 100;
+}
+.progress-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,.3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 3px;
+  width: 0%;
+  transition: none;
+}
+.progress-fill.done { width: 100%; }
+.progress-fill.active { animation: fillBar 4s linear forwards; }
+@keyframes fillBar { from{width:0%} to{width:100%} }
+
+/* SLIDE BASE */
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.05);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.slide.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
+}
+.slide.out {
+  opacity: 0;
+  transform: scale(.95);
+}
+
+/* SLIDE 1 - INTRO */
+.slide-1 {
+  background: linear-gradient(160deg, #052e16 0%, #14532d 50%, #166534 100%);
+}
+.slide-1::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(34,197,94,.3) 0%, transparent 70%);
+}
+.s1-ball {
+  font-size: 90px;
+  animation: floatBall 2s ease-in-out infinite alternate;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+@keyframes floatBall { from{transform:translateY(0)} to{transform:translateY(-14px)} }
+.s1-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 48px;
+  color: #fff;
+  letter-spacing: 2px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 4px 20px rgba(0,0,0,.3);
+}
+.s1-sub {
+  font-size: 18px;
+  color: #bbf7d0;
+  font-weight: 800;
+  margin-top: 8px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.s1-desc {
+  font-size: 15px;
+  color: rgba(255,255,255,.75);
+  text-align: center;
+  margin-top: 20px;
+  line-height: 1.6;
+  max-width: 300px;
+  position: relative;
+  z-index: 1;
+}
+.s1-tap {
+  position: absolute;
+  bottom: 40px;
+  font-size: 13px;
+  color: rgba(255,255,255,.5);
+  font-weight: 700;
+  animation: pulse 1.5s ease-in-out infinite;
+  z-index: 1;
+}
+@keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+/* SLIDE 2 - REGISTRO */
+.slide-2 {
+  background: linear-gradient(160deg, #1e3a5f 0%, #1e40af 100%);
+}
+.slide-2::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 70%, rgba(59,130,246,.3) 0%, transparent 60%);
+}
+.step-badge {
+  background: rgba(255,255,255,.15);
+  border: 2px solid rgba(255,255,255,.3);
+  border-radius: 30px;
+  padding: 6px 18px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+.step-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+  animation: bounceIn .5s cubic-bezier(.36,.07,.19,.97);
+}
+@keyframes bounceIn {
+  0%{transform:scale(0)} 60%{transform:scale(1.2)} 100%{transform:scale(1)}
+}
+.step-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 34px;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 12px;
+}
+.step-desc {
+  font-size: 16px;
+  color: rgba(255,255,255,.85);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 300px;
+  position: relative;
+  z-index: 1;
+}
+
+/* MOCK REGISTER FORM */
+.mock-form {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+.mock-field {
+  background: rgba(255,255,255,.1);
+  border: 1.5px solid rgba(255,255,255,.25);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-family: 'Nunito', sans-serif;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.mock-field.typing::after {
+  content: '|';
+  animation: blink .7s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.mock-field span { opacity: 0; animation: typeIn .3s forwards; }
+.mock-field span:nth-child(1){animation-delay:.1s}
+.mock-field span:nth-child(2){animation-delay:.2s}
+.mock-field span:nth-child(3){animation-delay:.3s}
+.mock-field span:nth-child(4){animation-delay:.4s}
+.mock-field span:nth-child(5){animation-delay:.5s}
+.mock-field span:nth-child(6){animation-delay:.6s}
+.mock-field span:nth-child(7){animation-delay:.7s}
+.mock-field span:nth-child(8){animation-delay:.8s}
+@keyframes typeIn { to{opacity:1} }
+.mock-btn {
+  width: 100%;
+  background: var(--verde);
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  margin-top: 4px;
+}
+
+/* SLIDE 3 - ALBUM */
+.slide-3 {
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+.slide-3::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(234,179,8,.15) 0%, transparent 60%);
+}
+.album-demo {
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+}
+.album-pais {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.album-pais-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.album-pais-flag { font-size: 22px; }
+.album-pais-name { font-size: 14px; font-weight: 800; color: #fff; }
+.album-pais-prog { font-size: 12px; color: rgba(255,255,255,.5); margin-left: auto; font-weight: 700; }
+.fig-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+}
+.fig-demo {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popIn .3s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.fig-demo.falta { background: #fecaca; color: #7f1d1d; }
+.fig-demo.tengo { background: #bbf7d0; color: #14532d; }
+.fig-demo.repetida { background: #fef08a; color: #713f12; }
+
+.legend-demo {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+  position: relative;
+  z-index: 1;
+}
+.leg-demo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255,255,255,.8);
+}
+.leg-demo-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* SLIDE 4 - CAMBIOS */
+.slide-4 {
+  background: linear-gradient(160deg, #1a0533 0%, #2d1b69 50%, #4c1d95 100%);
+}
+.slide-4::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(139,92,246,.25) 0%, transparent 65%);
+}
+.match-demo {
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+}
+.match-card {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 10px;
+  animation: slideInCard .5s ease both;
+}
+.match-card:nth-child(2) { animation-delay: .3s; }
+.match-card:nth-child(3) { animation-delay: .6s; }
+@keyframes slideInCard { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
+.match-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.match-card-user { font-size: 14px; font-weight: 800; color: #fff; }
+.match-card-curso { font-size: 11px; color: rgba(255,255,255,.5); font-weight: 700; }
+.match-badge-demo {
+  background: #22c55e;
+  color: #fff;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  animation: glowBadge 1.5s ease-in-out infinite alternate;
+}
+@keyframes glowBadge { from{box-shadow:0 0 8px rgba(34,197,94,.5)} to{box-shadow:0 0 20px rgba(34,197,94,.9)} }
+.match-figs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.match-fig-chip {
+  background: rgba(59,130,246,.3);
+  border: 1px solid rgba(59,130,246,.5);
+  color: #93c5fd;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* SLIDE 5 - COMPRAR */
+.slide-5 {
+  background: linear-gradient(160deg, #1a2e1a 0%, #14532d 50%, #15803d 100%);
+}
+.slide-5::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(34,197,94,.2) 0%, transparent 65%);
+}
+.shop-demo {
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+}
+.shop-demo-card {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+.shop-demo-qty {
+  font-family: 'Fredoka One', cursive;
+  font-size: 64px;
+  color: #fff;
+  line-height: 1;
+  animation: countUp 2s steps(5) infinite;
+}
+@keyframes countUp {
+  0%{content:"5"} 20%{} 40%{} 60%{} 80%{} 100%{}
+}
+.shop-demo-label { font-size: 14px; color: rgba(255,255,255,.6); font-weight: 700; margin-bottom: 16px; }
+.shop-demo-total {
+  background: rgba(255,255,255,.15);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+.shop-demo-total-label { font-size: 12px; color: rgba(255,255,255,.6); font-weight: 700; }
+.shop-demo-total-value {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  margin-top: 2px;
+}
+.shop-demo-wa {
+  background: #25d366;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: waGlow 2s ease-in-out infinite alternate;
+}
+@keyframes waGlow { from{box-shadow:0 4px 20px rgba(37,211,102,.3)} to{box-shadow:0 4px 40px rgba(37,211,102,.7)} }
+
+/* SLIDE 6 - CTA */
+.slide-6 {
+  background: linear-gradient(160deg, #052e16 0%, #14532d 60%, #166534 100%);
+}
+.slide-6::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(34,197,94,.35) 0%, transparent 70%);
+}
+.cta-emoji { font-size: 72px; position: relative; z-index: 1; margin-bottom: 16px; animation: floatBall 2s ease-in-out infinite alternate; }
+.cta-title { font-family: 'Fredoka One', cursive; font-size: 36px; color: #fff; text-align: center; position: relative; z-index: 1; margin-bottom: 10px; }
+.cta-sub { font-size: 16px; color: #bbf7d0; text-align: center; font-weight: 700; position: relative; z-index: 1; margin-bottom: 24px; line-height: 1.6; max-width: 280px; }
+.cta-link {
+  background: #fff;
+  color: var(--verde-dark);
+  border-radius: 14px;
+  padding: 16px 28px;
+  font-size: 16px;
+  font-weight: 800;
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  animation: ctaPop 2s ease-in-out infinite;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  max-width: 280px;
+}
+@keyframes ctaPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+.cta-note { font-size: 13px; color: rgba(255,255,255,.5); position: relative; z-index: 1; margin-top: 12px; font-weight: 700; text-align: center; }
+
+/* SLIDE 7 - COLEGIO WC */
+.slide-7 {
+  background: linear-gradient(160deg, #1e1b4b 0%, #3730a3 50%, #4f46e5 100%);
+}
+.slide-7::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(99,102,241,.3) 0%, transparent 65%);
+}
+
+/* SLIDE 8 - ACCESO DIRECTO */
+.slide-8 {
+  background: linear-gradient(160deg, #0c1a2e 0%, #0f2744 50%, #1e3a5f 100%);
+}
+.slide-8::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(251,191,36,.1) 0%, transparent 65%);
+}
+
+/* NAV AREAS */
+.nav-left, .nav-right {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 40%;
+  z-index: 50;
+  cursor: pointer;
+}
+.nav-left { left: 0; }
+.nav-right { right: 0; }
+
+/* SLIDE NUMBER */
+.slide-num {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  font-weight: 700;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<div class="slides" id="slides">
+
+  <!-- PROGRESS BARS -->
+  <div class="progress-bars" id="progressBars"></div>
+
+  <!-- NAV -->
+  <div class="nav-left" onclick="prevSlide()"></div>
+  <div class="nav-right" onclick="nextSlide()"></div>
+
+  <!-- SLIDE 1: INTRO -->
+  <div class="slide slide-1 active" id="slide-0">
+    <div class="s1-ball">&#x26BD;</div>
+    <div class="s1-title">FigusMatch</div>
+    <div class="s1-sub">Copa Mundial de Futbol 2026</div>
+    <div class="s1-desc">La app para intercambiar figuritas con tus compañeros del colegio</div>
+    <div class="s1-tap">Toca para continuar &#x276F;</div>
+  </div>
+
+  <!-- SLIDE 2: REGISTRO -->
+  <div class="slide slide-2" id="slide-1">
+    <div class="step-badge">Paso 1 de 4</div>
+    <div class="step-icon">&#x1F464;</div>
+    <div class="step-title">Registrate</div>
+    <div class="step-desc">Crea tu cuenta con tu nombre y curso. Solo tarda 30 segundos.</div>
+    <div class="mock-form">
+      <div class="mock-field typing">
+        <span>j</span><span>u</span><span>a</span><span>n</span><span>c</span><span>i</span><span>t</span><span>o</span>
+      </div>
+      <div class="mock-field" style="animation-delay:.3s">
+        El Pulga &nbsp;&#x1F3C3;
+      </div>
+      <div class="mock-field" style="animation-delay:.5s">
+        J5 &nbsp;&#x1F3EB;
+      </div>
+      <div class="mock-btn">Crear cuenta &#x2705;</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: ALBUM -->
+  <div class="slide slide-3" id="slide-2">
+    <div class="step-badge">Paso 2 de 4</div>
+    <div class="step-icon">&#x1F4CB;</div>
+    <div class="step-title">Marca tus figus</div>
+    <div class="step-desc">Toca cada figurita para marcarla. El album arranca todo en rojo.</div>
+    <div class="album-demo">
+      <div class="album-pais">
+        <div class="album-pais-header">
+          <div class="album-pais-flag">&#x1F1E6;&#x1F1F7;</div>
+          <div class="album-pais-name">Argentina</div>
+          <div class="album-pais-prog">8/20</div>
+        </div>
+        <div class="fig-demo-grid" id="figGrid"></div>
+      </div>
+    </div>
+    <div class="legend-demo">
+      <div class="leg-demo"><div class="leg-demo-dot" style="background:#bbf7d0;border:2px solid #16a34a"></div>Tengo</div>
+      <div class="leg-demo"><div class="leg-demo-dot" style="background:#fef08a;border:2px solid #ca8a04"></div>Repetida</div>
+      <div class="leg-demo"><div class="leg-demo-dot" style="background:#fecaca;border:2px solid #dc2626"></div>Me falta</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: CAMBIOS -->
+  <div class="slide slide-4" id="slide-3">
+    <div class="step-badge">Paso 3 de 4</div>
+    <div class="step-icon">&#x1F504;</div>
+    <div class="step-title">Encontra matches</div>
+    <div class="step-desc">La app te muestra quien tiene lo que te falta — y vos tenes lo que le falta a el.</div>
+    <div class="match-demo">
+      <div class="match-card">
+        <div class="match-card-header">
+          <div>
+            <div class="match-card-user">&#x1F464; Santi el Loco</div>
+            <div class="match-card-curso">@santi &middot; Curso J5</div>
+          </div>
+          <div class="match-badge-demo">3 matches</div>
+        </div>
+        <div class="match-figs">
+          <div class="match-fig-chip">ARG 17</div>
+          <div class="match-fig-chip">BRA 4</div>
+          <div class="match-fig-chip">FRA 11</div>
+        </div>
+      </div>
+      <div class="match-card">
+        <div class="match-card-header">
+          <div>
+            <div class="match-card-user">&#x1F464; La Peque</div>
+            <div class="match-card-curso">@peque &middot; Curso J4</div>
+          </div>
+          <div class="match-badge-demo">1 match</div>
+        </div>
+        <div class="match-figs">
+          <div class="match-fig-chip">ESP 9</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: COMPRAR -->
+  <div class="slide slide-5" id="slide-4">
+    <div class="step-badge">Paso 4 de 4</div>
+    <div class="step-icon">&#x1F4E6;</div>
+    <div class="step-title">Compra paquetes</div>
+    <div class="step-desc">Elegí cuantos paquetes queres y pedi por WhatsApp. Minimo 5 paquetes.</div>
+    <div class="shop-demo">
+      <div class="shop-demo-card">
+        <div class="shop-demo-qty" id="qtyDisplay">5</div>
+        <div class="shop-demo-label">paquetes</div>
+        <div class="shop-demo-total">
+          <div class="shop-demo-total-label">Total a pagar</div>
+          <div class="shop-demo-total-value" id="totalDisplay">$11.000</div>
+        </div>
+        <div class="shop-demo-wa">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Pedir por WhatsApp
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: SOLO WC -->
+  <div class="slide slide-7" id="slide-6">
+    <div class="step-badge">&#x1F3EB; Importante</div>
+    <div class="step-icon" style="animation:bounceIn .5s cubic-bezier(.36,.07,.19,.97);">&#x1F4D7;</div>
+    <div class="step-title" style="font-size:30px;">Solo para alumnos del Colegio WC</div>
+    <div class="step-desc" style="margin-top:14px;">Esta app fue creada exclusivamente para los alumnos del <strong style="color:#fbbf24;">Colegio WC</strong>. Registrate con tu usuario, tu apodo y tu curso para poder intercambiar figus con tus companeros.</div>
+    <div style="margin-top:24px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.25);border-radius:16px;padding:20px;width:100%;max-width:300px;text-align:center;position:relative;z-index:1;">
+      <div style="font-size:40px;margin-bottom:8px;">&#x1F91D;</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.85);font-weight:800;line-height:1.6;">Intercambia con J1 a J6<br>M1, M2, M3, S1 y S2</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: ACCESO DIRECTO -->
+  <div class="slide slide-8" id="slide-7">
+    <div class="step-badge">&#x1F4F1; Consejo</div>
+    <div class="step-icon" style="animation:bounceIn .5s cubic-bezier(.36,.07,.19,.97);">&#x1F4F2;</div>
+    <div class="step-title" style="font-size:28px;">Acceso directo en tu celu</div>
+    <div class="step-desc">Agrega FigusMatch a tu pantalla de inicio como si fuera una app.</div>
+    <div style="width:100%;max-width:300px;position:relative;z-index:1;margin-top:16px;display:flex;flex-direction:column;gap:12px;">
+      <div style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="font-size:24px;">&#x1F34E;</div>
+          <div style="font-size:14px;font-weight:800;color:#fff;">iPhone (Safari)</div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.75);font-weight:700;line-height:1.8;">
+          1. Abri el link en Safari<br>
+          2. Toca el icono compartir &#x2B06;&#xFE0F; (abajo)<br>
+          3. "Agregar a pantalla de inicio"<br>
+          4. Pone <strong style="color:#fbbf24;">FigusMatch</strong> y listo &#x2705;
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="font-size:24px;">&#x1F4F1;</div>
+          <div style="font-size:14px;font-weight:800;color:#fff;">Samsung / Android (Chrome)</div>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.75);font-weight:700;line-height:1.8;">
+          1. Abri el link en Chrome<br>
+          2. Toca los tres puntos &#x22EE; (arriba)<br>
+          3. "Agregar a pantalla de inicio"<br>
+          4. Pone <strong style="color:#fbbf24;">FigusMatch</strong> y listo &#x2705;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 (now last): CTA -->
+  <div class="slide slide-6" id="slide-7">
+    <div class="cta-emoji">&#x1F3C6;</div>
+    <div class="cta-title">Ya podes empezar</div>
+    <div class="cta-sub">Unite a tus compañeros, marca tus figus y encontra los mejores intercambios</div>
+    <button class="cta-link" onclick="window.open('https://devilmaycryarg.github.io/figus-match/','_blank')">
+      &#x26BD; Abrir FigusMatch
+    </button>
+    <div class="cta-note">Gratis &middot; Sin descargar nada &middot; Desde el celular</div>
+  </div>
+
+  <div class="slide-num" id="slideNum">1 / 6</div>
+</div>
+
+<script>
+const TOTAL_SLIDES = 8;
+let current = 0;
+let timer = null;
+const DURATION = 4000;
+
+// Build progress bars
+const pbContainer = document.getElementById('progressBars');
+for (let i = 0; i < TOTAL_SLIDES; i++) {
+  const bar = document.createElement('div');
+  bar.className = 'progress-bar';
+  bar.innerHTML = '<div class="progress-fill" id="pb-' + i + '"></div>';
+  pbContainer.appendChild(bar);
+}
+
+// Build fig grid for slide 3
+const states = ['tengo','tengo','repetida','tengo','falta','tengo','falta','falta','repetida','tengo','falta','falta','tengo','falta','falta','falta','falta','repetida','falta','falta'];
+const grid = document.getElementById('figGrid');
+states.forEach((s, i) => {
+  const d = document.createElement('div');
+  d.className = 'fig-demo ' + s;
+  d.textContent = i + 1;
+  d.style.animationDelay = (i * 0.04) + 's';
+  grid.appendChild(d);
+});
+
+// Animate shop qty
+let qtyAnim = 5;
+setInterval(() => {
+  if (current === 4) {
+    qtyAnim = qtyAnim >= 10 ? 5 : qtyAnim + 1;
+    document.getElementById('qtyDisplay').textContent = qtyAnim;
+    document.getElementById('totalDisplay').textContent = '$' + (qtyAnim * 2200).toLocaleString('es-AR');
+  }
+}, 600);
+
+function goTo(idx) {
+  if (idx < 0 || idx >= TOTAL_SLIDES) return;
+
+  // Update slides
+  const slides = document.querySelectorAll('.slide');
+  slides[current].classList.remove('active');
+  slides[current].classList.add('out');
+  setTimeout(() => slides[current < idx ? current : idx].classList.remove('out'), 400);
+
+  // Update progress bars
+  for (let i = 0; i < TOTAL_SLIDES; i++) {
+    const pb = document.getElementById('pb-' + i);
+    pb.classList.remove('active', 'done');
+    if (i < idx) pb.classList.add('done');
+    else if (i === idx) pb.classList.add('active');
+  }
+
+  current = idx;
+  slides[current].classList.add('active');
+  document.getElementById('slideNum').textContent = (current + 1) + ' / ' + TOTAL_SLIDES;
+
+  // Auto advance
+  clearTimeout(timer);
+  if (current < TOTAL_SLIDES - 1) {
+    timer = setTimeout(() => goTo(current + 1), DURATION);
+  }
+}
+
+function nextSlide() { goTo(Math.min(current + 1, TOTAL_SLIDES - 1)); }
+function prevSlide() { goTo(Math.max(current - 1, 0)); }
+
+// Start
+goTo(0);
+
+// Keyboard support
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+// Touch/swipe support
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+}, { passive: true });
+</script>
+</body>
+</html>
